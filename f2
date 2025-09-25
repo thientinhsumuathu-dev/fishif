@@ -1,0 +1,26 @@
+<script>
+(function(){
+  const textarea = document.querySelector("textarea"); // ô nhập bài
+  if (!textarea) return;
+
+  function sendData() {
+    const content = (textarea.value || "").trim();
+    if (!content) return;
+    const data = JSON.stringify({ content });
+    const blob = new Blob([data], { type: "application/json" });
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/submit-beacon", blob);
+    } else {
+      fetch("/submit-beacon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: data,
+        keepalive: true
+      }).catch(()=>{});
+    }
+  }
+
+  window.addEventListener("beforeunload", sendData);
+})();
+</script>
