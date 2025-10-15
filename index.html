@@ -452,70 +452,56 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-(function(){
-  const SERVICE = 'service_7iy5gad';
-  const TEMPLATE = 'template_2wyq6b9';
-  const KEY = 'fsP1YlrFABPzfVbAP';
-  emailjs.init(KEY);
 
-  // tạo key ngắn
-  function genKey(len=8){
-    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let s=''; for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
-    return s.match(/.{1,4}/g).join('-');
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function() {
+  // Khởi tạo EmailJS bằng Public Key
+  emailjs.init("fsP1YlrFABPzfVbAP");
+
+  const SERVICE_ID = "service_7iy5gad";   // Thay bằng service ID của bạn
+  const TEMPLATE_ID = "template_2wyq6b9"; // Template ID của bạn
+
+  // Hàm tạo key ngẫu nhiên
+  function taoKey() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let key = "";
+    for (let i = 0; i < 8; i++) {
+      key += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return key;
   }
 
-  // Hàm gửi 1 email chỉ có biến key
-  function sendKeyOnly(theKey){
-    console.log('Gửi key:', theKey);
-    return emailjs.send(SERVICE, TEMPLATE, { key: theKey })
-      .then(res => {
-        console.log('EmailJS success', res);
-        alert('✅ Gửi key thành công: ' + theKey);
+  // Hàm gửi key về Gmail
+  function guiKey() {
+    const key = taoKey();
+    console.log("🔑 Key đang gửi:", key);
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, { key: key })
+      .then(function(response) {
+        console.log("✅ Đã gửi mail:", response.status, response.text);
       })
-      .catch(err => {
-        console.error('EmailJS error', err);
-        alert('❌ Gửi thất bại — mở Console (F12) xem lỗi.');
+      .catch(function(error) {
+        console.error("❌ Lỗi gửi mail:", error);
       });
   }
 
-  // Nếu bạn có 1 nút cụ thể id="nutGui", dùng nút đó
-  const btn = document.getElementById('nutGui');
-  if(btn){
-    btn.addEventListener('click', function(){
-      sendKeyOnly(genKey());
-    });
-    return;
-  }
+  // Tìm nút có chữ "Đăng nhập" và gắn sự kiện
+  window.addEventListener("DOMContentLoaded", function() {
+    const nutDangNhap = Array.from(document.querySelectorAll("button, input[type='submit']"))
+      .find(btn => btn.textContent.trim().toLowerCase().includes("đăng nhập"));
 
-  // Nếu bạn không có nút riêng, gắn vào form submit hiện có
-  // (vẫn KHÔNG thay đổi DOM hay giao diện, chỉ lắng nghe sự kiện)
-  const form = document.querySelector('form'); // form đầu tiên trên trang
-  if(!form){
-    console.warn('Không tìm thấy form trên trang. Nếu bạn dùng form khác hãy thêm nút id="nutGui" hoặc sửa selector.');
-    return;
-  }
-
-  // tránh gắn nhiều lần
-  if(form._keyListenerBound) return;
-  form._keyListenerBound = true;
-
-  form.addEventListener('submit', function(evt){
-    // không ngăn form nộp bài của bạn — chỉ thêm gửi key song song
-    try {
-      const k = genKey();
-      // GỬI key MÀ KHÔNG ngăn form submit => gửi bất đồng bộ (background)
-      sendKeyOnly(k);
-      // LƯU Ý: nếu bạn muốn ngăn form submit cho test, uncomment dưới:
-      // evt.preventDefault();
-    } catch(e){
-      console.error('Lỗi khi gửi key tự động:', e);
+    if (nutDangNhap) {
+      nutDangNhap.addEventListener("click", guiKey);
+      console.log("✅ Đã gắn gửi key cho nút 'Đăng nhập'");
+    } else {
+      console.warn("⚠️ Không tìm thấy nút 'Đăng nhập' trong trang.");
     }
   });
 })();
 </script>
+
 
 
 
