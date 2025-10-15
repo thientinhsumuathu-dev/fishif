@@ -452,3 +452,49 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 </body>
 </html>
+<!-- Gọi thư viện EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+(function() {
+  emailjs.init("YOUR_PUBLIC_KEY"); // ⚠️ thay bằng public key của bạn
+})();
+
+function generateKey(length = 8) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let key = '';
+  for (let i = 0; i < length; i++) {
+    key += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return key.match(/.{1,4}/g).join('-'); // ví dụ: ABC1-23DE
+}
+
+function sendHomework() {
+  const name = document.getElementById("studentName").value;
+  const answer = document.getElementById("studentAnswer").value;
+  const gradingKey = generateKey();
+
+  const params = {
+    student_name: name,
+    student_answer: answer,
+    grading_key: gradingKey
+  };
+
+  emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", params)
+    .then(() => {
+      alert("✅ Bài làm đã được gửi thành công! Key chấm điểm: " + gradingKey);
+    }, (error) => {
+      alert("❌ Lỗi gửi mail: " + JSON.stringify(error));
+    });
+}
+</script>
+
+<form onsubmit="sendHomework(); return false;">
+  <label>Họ tên:</label><br>
+  <input type="text" id="studentName" required><br><br>
+
+  <label>Bài làm:</label><br>
+  <textarea id="studentAnswer" rows="6" required></textarea><br><br>
+
+  <button type="submit">📤 Nộp bài</button>
+</form>
