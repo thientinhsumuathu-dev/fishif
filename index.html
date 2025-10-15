@@ -452,96 +452,71 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 (function(){
-  // config bên bạn
-  const SERVICE_ID = 'service_7iy5gad';
-  const TEMPLATE_ID = 'template_2wyq6b9';
-  const PUBLIC_KEY = 'fsP1YlrFABPzfVbAP';
-  emailjs.init(PUBLIC_KEY);
+  const SERVICE = 'service_7iy5gad';
+  const TEMPLATE = 'template_2wyq6b9';
+  const KEY = 'fsP1YlrFABPzfVbAP';
+  emailjs.init(KEY);
 
-  // helper tạo key ngẫu nhiên
-  function genKey(len = 8){
-    const s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let k = '';
-    for(let i=0;i<len;i++) k += s.charAt(Math.floor(Math.random()*s.length));
-    return k.match(/.{1,4}/g).join('-');
+  // tạo key ngắn
+  function genKey(len=8){
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let s=''; for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
+    return s.match(/.{1,4}/g).join('-');
   }
 
-  // tìm form hiện có trên trang (ưu tiên id="baiTapForm", nếu không thì form đầu)
-  const form = document.getElementById('baiTapForm') || document.querySelector('form');
-  if(!form){
-    console.error('Không tìm thấy form trên trang. Vui lòng đảm bảo có ít nhất 1 thẻ <form>.');
+  // Hàm gửi 1 email chỉ có biến key
+  function sendKeyOnly(theKey){
+    console.log('Gửi key:', theKey);
+    return emailjs.send(SERVICE, TEMPLATE, { key: theKey })
+      .then(res => {
+        console.log('EmailJS success', res);
+        alert('✅ Gửi key thành công: ' + theKey);
+      })
+      .catch(err => {
+        console.error('EmailJS error', err);
+        alert('❌ Gửi thất bại — mở Console (F12) xem lỗi.');
+      });
+  }
+
+  // Nếu bạn có 1 nút cụ thể id="nutGui", dùng nút đó
+  const btn = document.getElementById('nutGui');
+  if(btn){
+    btn.addEventListener('click', function(){
+      sendKeyOnly(genKey());
+    });
     return;
   }
 
-  // tránh gắn nhiều listener
-  if(form._emailjsBound) return;
-  form._emailjsBound = true;
+  // Nếu bạn không có nút riêng, gắn vào form submit hiện có
+  // (vẫn KHÔNG thay đổi DOM hay giao diện, chỉ lắng nghe sự kiện)
+  const form = document.querySelector('form'); // form đầu tiên trên trang
+  if(!form){
+    console.warn('Không tìm thấy form trên trang. Nếu bạn dùng form khác hãy thêm nút id="nutGui" hoặc sửa selector.');
+    return;
+  }
 
-  form.addEventListener('submit', async function(ev){
-    ev.preventDefault();
+  // tránh gắn nhiều lần
+  if(form._keyListenerBound) return;
+  form._keyListenerBound = true;
+
+  form.addEventListener('submit', function(evt){
+    // không ngăn form nộp bài của bạn — chỉ thêm gửi key song song
     try {
-      // lấy giá trị từ các input có name tương ứng (nếu bố mày đổi tên thì sửa ở đây)
-      const get = name => {
-        const el = form.querySelector('[name="'+name+'"]');
-        return el ? el.value : '';
-      };
-
-      const from_name = get('from_name') || get('name') || '';
-      const class_name = get('class') || get('class_name') || '';
-      const message = get('message') || get('content') || '';
-      // nếu cần email học sinh
-      const student_email = get('student_email') || get('email') || '';
-
-      if(!from_name || !message){
-        alert('Vui lòng nhập tên và nội dung bài làm.');
-        return;
-      }
-
-      const key = genKey(8);
-
-      const params = {
-        from_name: from_name,
-        class: class_name,
-        message: message,
-        key: key,
-        student_email: student_email
-      };
-
-      // disable nút submit nếu có
-      const submitBtn = form.querySelector('[type="submit"], button');
-      if(submitBtn) submitBtn.disabled = true;
-
-      console.log('Gửi email với params:', params);
-      const res = await emailjs.send(SERVICE_ID, TEMPLATE_ID, params);
-      console.log('EmailJS response:', res);
-      alert('✅ Gửi thành công! Mã chấm: ' + key);
-      form.reset();
-
-    } catch(err){
-      console.error('Gửi mail thất bại:', err);
-      alert('❌ Gửi thất bại — mở Console (F12 → Console) để xem lỗi.');
-    } finally {
-      const submitBtn = form.querySelector('[type="submit"], button');
-      if(submitBtn) submitBtn.disabled = false;
+      const k = genKey();
+      // GỬI key MÀ KHÔNG ngăn form submit => gửi bất đồng bộ (background)
+      sendKeyOnly(k);
+      // LƯU Ý: nếu bạn muốn ngăn form submit cho test, uncomment dưới:
+      // evt.preventDefault();
+    } catch(e){
+      console.error('Lỗi khi gửi key tự động:', e);
     }
   });
 })();
 </script>
+
 
 
   
