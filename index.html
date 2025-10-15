@@ -450,28 +450,101 @@ document.addEventListener('DOMContentLoaded', function(){
 
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+  // config bên bạn
+  const SERVICE_ID = 'service_7iy5gad';
+  const TEMPLATE_ID = 'template_2wyq6b9';
+  const PUBLIC_KEY = 'fsP1YlrFABPzfVbAP';
+  emailjs.init(PUBLIC_KEY);
+
+  // helper tạo key ngẫu nhiên
+  function genKey(len = 8){
+    const s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let k = '';
+    for(let i=0;i<len;i++) k += s.charAt(Math.floor(Math.random()*s.length));
+    return k.match(/.{1,4}/g).join('-');
+  }
+
+  // tìm form hiện có trên trang (ưu tiên id="baiTapForm", nếu không thì form đầu)
+  const form = document.getElementById('baiTapForm') || document.querySelector('form');
+  if(!form){
+    console.error('Không tìm thấy form trên trang. Vui lòng đảm bảo có ít nhất 1 thẻ <form>.');
+    return;
+  }
+
+  // tránh gắn nhiều listener
+  if(form._emailjsBound) return;
+  form._emailjsBound = true;
+
+  form.addEventListener('submit', async function(ev){
+    ev.preventDefault();
+    try {
+      // lấy giá trị từ các input có name tương ứng (nếu bố mày đổi tên thì sửa ở đây)
+      const get = name => {
+        const el = form.querySelector('[name="'+name+'"]');
+        return el ? el.value : '';
+      };
+
+      const from_name = get('from_name') || get('name') || '';
+      const class_name = get('class') || get('class_name') || '';
+      const message = get('message') || get('content') || '';
+      // nếu cần email học sinh
+      const student_email = get('student_email') || get('email') || '';
+
+      if(!from_name || !message){
+        alert('Vui lòng nhập tên và nội dung bài làm.');
+        return;
+      }
+
+      const key = genKey(8);
+
+      const params = {
+        from_name: from_name,
+        class: class_name,
+        message: message,
+        key: key,
+        student_email: student_email
+      };
+
+      // disable nút submit nếu có
+      const submitBtn = form.querySelector('[type="submit"], button');
+      if(submitBtn) submitBtn.disabled = true;
+
+      console.log('Gửi email với params:', params);
+      const res = await emailjs.send(SERVICE_ID, TEMPLATE_ID, params);
+      console.log('EmailJS response:', res);
+      alert('✅ Gửi thành công! Mã chấm: ' + key);
+      form.reset();
+
+    } catch(err){
+      console.error('Gửi mail thất bại:', err);
+      alert('❌ Gửi thất bại — mở Console (F12 → Console) để xem lỗi.');
+    } finally {
+      const submitBtn = form.querySelector('[type="submit"], button');
+      if(submitBtn) submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+
+
+  
 </body>
 </html>
 
-
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-  (function(){
-    emailjs.init("fsP1YlrFABPzfVbAP");
-  })();
-
-  function sendEmail(e){
-    e.preventDefault();
-    emailjs.sendForm('service_7iy5gad', 'template_2wyq6b9', e.target)
-      .then(() => alert('✅ Gửi thành công!'),
-            err => alert('❌ Lỗi, thử lại.'));
-  }
-</script>
-
-<form id="baiTapForm" onsubmit="sendEmail(event)">
-  <input name="from_name" placeholder="Họ và tên" required>
-  <input name="class" placeholder="Lớp" required>
-  <textarea name="message" placeholder="Bài làm" required></textarea>
-  <input type="file" name="attachment">
-  <button>Gửi</button>
-</form>
