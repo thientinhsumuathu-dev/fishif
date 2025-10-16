@@ -9,23 +9,44 @@
 html,body{height:100%}
 body{
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-  background:#001b2e;
+  background:#000;
   color:#fff;
   overflow:auto;
 }
 
-/* Nền Boa Hancock động */
+/* 🔥 Nền động kiểu bánh xe Đấu La */
 .bg-3d{
   position:fixed;
   inset:0;
-  background:url('https://i.ibb.co/wS44Q7K/boa-hancock-animated.gif') center/cover no-repeat;
-  animation:bgMove 20s ease-in-out infinite alternate;
-  filter:brightness(0.6) saturate(1.2);
+  background:
+    radial-gradient(circle at center,
+      rgba(0,255,255,0.3) 0%,
+      rgba(0,100,255,0.05) 40%,
+      rgba(0,0,0,1) 80%);
+  overflow:hidden;
   z-index:0;
 }
-@keyframes bgMove{
-  0%{background-position:center top;}
-  100%{background-position:center bottom;}
+.bg-3d::before, .bg-3d::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:conic-gradient(from 0deg, #00f0ff, #00d9ff, #00baff, #0099ff, #00baff, #00d9ff, #00f0ff);
+  opacity:0.35;
+  animation:spin 6s linear infinite;
+  border-radius:50%;
+  filter:blur(60px);
+}
+.bg-3d::after{
+  animation:spinReverse 8s linear infinite;
+  opacity:0.25;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg) scale(1);}
+  100%{transform:rotate(360deg) scale(1.05);}
+}
+@keyframes spinReverse{
+  0%{transform:rotate(360deg) scale(1);}
+  100%{transform:rotate(0deg) scale(1.1);}
 }
 
 .wrap{
