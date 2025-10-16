@@ -1,230 +1,170 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cổng thanh toán — Demo</title>
-<style>
-  /* Reset + base */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-    background: linear-gradient(180deg,#04121b 0%, #052c3c 55%, #02141a 100%);
-    color:#fff;
-    overflow:hidden;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cổng thanh toán - TRAN DINH HIEP</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background: linear-gradient(180deg,#0bb77a 0%, #0a6b9a 60%, #073a6a 100%);
+      color:#fff;
+      overflow:auto;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-  /* subtle moving light background */
-  .bg-animation{
-    position:fixed;inset:0;z-index:0;
-    background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03), transparent 6%),
-                      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02), transparent 10%);
-    animation: bgmove 10s linear infinite;
-    mix-blend-mode: screen;
-  }
-  @keyframes bgmove {0%{transform:translateY(0)}50%{transform:translateY(6%)}100%{transform:translateY(0)}}
+    .wrap{
+      position:relative;
+      z-index:2;
+      max-width:520px;
+      margin:48px auto;
+      padding:22px;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      box-shadow: 0 20px 60px rgba(2,8,20,0.45);
+      backdrop-filter: blur(6px);
+    }
 
-  /* main card */
-  .card-wrap{position:relative;z-index:2;max-width:640px;margin:40px auto;padding:24px;border-radius:16px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));backdrop-filter:blur(6px);
-    box-shadow:0 30px 80px rgba(0,0,0,0.6);text-align:center}
+    /* ảnh anime dễ thương */
+    .decor{position:absolute;inset:0;pointer-events:none;z-index:1}
+    .anime{position:absolute;width:100px;height:100px;background-size:cover;border-radius:50%;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.35));opacity:0.95}
+    .a1{left:-10%;top:10%;animation:float1 8s ease-in-out infinite;background-image:url('https://i.ibb.co/vJx8d2b/nami.png');}
+    .a2{right:-8%;top:6%;animation:float2 9s ease-in-out .5s infinite;background-image:url('https://i.ibb.co/g6RgTQk/robin.png');}
+    .a3{left:4%;bottom:-8%;animation:float3 10s ease-in-out 1s infinite;background-image:url('https://i.ibb.co/ZgQtPtk/boa.png');}
+    .a4{right:10%;bottom:6%;animation:float1 9s ease-in-out 1.4s infinite;background-image:url('https://i.ibb.co/mSxxt4h/vivi.png');}
+    @keyframes float1{0%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}100%{transform:translateY(0) rotate(-3deg)}}
+    @keyframes float2{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(6deg)}100%{transform:translateY(0) rotate(0deg)}}
+    @keyframes float3{0%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-14px) rotate(-4deg)}100%{transform:translateY(0) rotate(2deg)}}
 
-  h1{font-size:20px;margin-bottom:8px;letter-spacing:0.2px}
-  p.lead{opacity:.95;color:#e6f9ff;margin-bottom:12px}
+    .card{background:#fff;border-radius:12px;padding:18px;text-align:center;color:#042b2b}
+    .card h1{font-size:18px;margin-bottom:6px}
+    .acc-name{font-weight:800;font-size:22px;margin:6px 0}
+    .acc-num{font-weight:700;margin-bottom:12px}
 
-  /* anime side images */
-  .anime-left,.anime-right{
-    position:fixed;top:50%;transform:translateY(-50%);width:220px;z-index:1;opacity:0.95;
-    filter:drop-shadow(0 30px 50px rgba(0,0,0,0.5));
-    animation: floaty 6s ease-in-out infinite;
-  }
-  .anime-left{left:12px}
-  .anime-right{right:12px;transform:translateY(-50%) scaleX(-1)}
-  @keyframes floaty{0%{transform:translateY(-50%) rotate(-2deg)}50%{transform:translateY(-58%) rotate(2deg)}100%{transform:translateY(-50%) rotate(-2deg)}}
+    .qr-wrap{padding:12px;margin:8px auto 0;display:flex;justify-content:center}
+    .qr{width:260px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(3,20,30,0.12)}
+    .qr img{max-width:90%;max-height:90%;display:block;border-radius:6px}
 
-  /* QR */
-  .qr-box{display:flex;justify-content:center;margin:6px 0}
-  .qr{width:300px;height:300px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 60px rgba(0,0,0,0.4)}
-  .qr img{max-width:88%;max-height:88%;border-radius:6px;display:block}
+    .brand-logos{display:flex;justify-content:center;gap:12px;margin-top:12px;opacity:0.95}
+    .note{margin-top:14px;font-size:15px;color:#052c2c;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96));}
+    .phone-line{background:linear-gradient(90deg,#f8fdfd,#ffffff);padding:10px;border-radius:10px;margin-top:10px;color:#032b2b;font-weight:700}
 
-  /* note and phone */
-  .note{margin-top:14px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(255,255,255,0.98));color:#052b2b;font-weight:700}
-  .phone{margin-top:10px;padding:10px;background:#ffffff;border-radius:10px;color:#013233;font-weight:800}
+    .controls{display:flex;gap:12px;margin-top:16px}
+    .btn{flex:1;padding:12px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn.secondary{background:transparent;border:2px dashed rgba(3,30,30,0.06);color:#042b2b}
+    .btn.primary{background:linear-gradient(90deg,#17c2a8,#0ea6ff);color:white;box-shadow:0 10px 30px rgba(14,166,255,0.18);cursor:not-allowed}
 
-  /* controls */
-  .controls{display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap}
-  .btn{padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
-  .btn.ghost{background:transparent;border:2px dashed rgba(2,30,30,0.06);color:#042b2b}
-  .btn.primary{background:linear-gradient(90deg,#00d3a6,#00a5ff);color:white;box-shadow:0 18px 40px rgba(0,165,255,0.14);cursor:not-allowed}
-  .btn.active{cursor:pointer;box-shadow:0 22px 60px rgba(0,165,255,0.22)}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);top:12%;background:#fff0f0;color:#902020;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.2);display:none;z-index:60}
+    .full{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,6,10,0.9), rgba(2,8,20,0.95));display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:70;opacity:0;pointer-events:none;transition:opacity .45s}
+    .full.show{opacity:1;pointer-events:auto}
+    .full .box{width:320px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:18px;border-radius:14px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
 
-  .status{margin-top:12px;font-weight:700;color:#ffe6ff}
-
-  /* toast */
-  .toast{position:fixed;left:50%;top:14%;transform:translateX(-50%);background:#fff0f0;color:#7a1212;padding:10px 14px;border-radius:10px;display:none;z-index:60}
-
-  /* full-screen confirmation */
-  .fullscreen{position:fixed;inset:0;background:linear-gradient(180deg, rgba(3,10,14,0.96), rgba(2,8,20,0.98));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;opacity:0;pointer-events:none;transition:opacity .45s}
-  .fullscreen.show{opacity:1;pointer-events:auto}
-  .full-card{width:90%;max-width:720px;padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;color:#fff;box-shadow:0 40px 120px rgba(0,0,0,0.6)}
-
-  .celebrate {margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-  .confetti{width:18px;height:18px;border-radius:50%;opacity:0.95;animation:pop 1.4s infinite}
-  @keyframes pop{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
-/* responsive */
-  @media (max-width:520px){
-    .anime-left,.anime-right{display:none}
-    .qr{width:200px;height:200px}
-    .card-wrap{margin:18px}
-  }
-</style>
+    @media (max-width:480px){
+      .wrap{margin:16px;padding:14px}
+      .qr{width:190px;height:190px}
+      .anime{display:none}
+    }
+  </style>
 </head>
 <body>
-  <!-- animated background + anime characters -->
-  <div class="bg-animation" aria-hidden="true"></div>
-
-  <!-- sample anime images (online) -->
-  <img class="anime-left" src="https://i.ibb.co/4Z3y2Km/anime1.png" alt="anime left">
-  <img class="anime-right" src="https://i.ibb.co/4Z3y2Km/anime1.png" alt="anime right">
-
-  <!-- main card -->
-  <div class="card-wrap" role="main" aria-labelledby="title">
-    <h1 id="title">Để tiếp tục, xin hãy thanh toán</h1>
-    <p class="lead">Quét mã QR bên dưới và chuyển tiền — trang demo chỉ minh họa giao diện.</p>
-
-    <div class="qr-box" aria-hidden="false">
-      <!-- QR image: using public QR generator so no external file needed -->
-      <div class="qr"><img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Demo-Payment-QR" alt="Mã QR"></div>
-    </div>
-
-    <div class="note">Nếu gặp vấn đề hãy liên hệ <strong>0355567466</strong><br><small style="opacity:.9">Nội dung thanh toán là <b>số điện thoại của bạn</b></small></div>
-    <div class="phone">SĐT liên hệ: <span id="phoneText">0355567466</span></div>
-
-    <!-- controls: copy account, copy phone, download qr, confirm -->
-    <div class="controls" role="group" aria-label="Các chức năng">
-      <button class="btn ghost" id="copyAccountBtn" title="Sao chép số tài khoản">📋 Sao chép số tài khoản</button>
-      <button class="btn ghost" id="copyPhoneBtn" title="Sao chép số điện thoại">📋 Sao chép SĐT liên hệ</button>
-      <button class="btn ghost" id="saveQrBtn" title="Lưu mã QR">💾 Lưu mã QR về máy</button>
-      <button class="btn primary" id="confirmBtn" aria-disabled="true" title="Xác nhận đã chuyển tiền">✅ Xác nhận đã chuyển tiền</button>
-    </div>
-
-    <div class="status" id="statusText" aria-live="polite" style="display:none"></div>
+  <div class="decor" aria-hidden="true">
+    <div class="anime a1"></div>
+    <div class="anime a2"></div>
+    <div class="anime a3"></div>
+    <div class="anime a4"></div>
   </div>
 
-  <div class="toast" id="toast">Bạn chưa chuyển tiền hoặc thời gian xác nhận chưa đủ.</div>
+  <div class="wrap" role="main" aria-labelledby="t">
+    <div class="card" id="t">
+      <h1>Quét mã để chuyển tiền đến</h1>
+      <div class="acc-name">TRAN DINH HIEP</div>
+      <div class="acc-num">51015202530369</div>
 
-  <!-- full-screen confirmation (giao diện 2) -->
-  <div class="fullscreen" id="fullScreen">
-    <div class="full-card">
-      <h2>💫 Hệ thống đang xác nhận giao dịch...</h2>
-      <p style="opacity:.95;margin-top:8px">❤️ Cảm ơn bạn đã thanh toán.</p>
-
-      <!-- larger anime / illustration -->
-      <div style="margin-top:14px">
-        <img src="https://i.ibb.co/7nvc1rQ/anime-hero.png" alt="anime hero" style="width:260px;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
+      <div class="qr-wrap">
+        <div class="qr">
+          <img id="qrImg" src="https://files.oaiusercontent.com/file-0000000047ec620ab2a99d0572fdd8ff" alt="QR VPBank">
+        </div>
       </div>
 
-      <div class="celebrate" id="celebs">
-        <div class="confetti" style="background:#ff7ab6"></div>
-        <div class="confetti" style="background:#7be6ff;animation-delay:.2s"></div>
-        <div class="confetti" style="background:#ffd27b;animation-delay:.4s"></div>
+      <div class="note">
+        Nếu gặp vấn đề hãy liên hệ <strong>0355567466</strong> — Nội dung thanh toán là <strong>số điện thoại của bạn</strong>.
       </div>
 
-      <div style="margin-top:18px">
-        <a href="#" id="backBtn" style="text-decoration:none;padding:10px 14px;border-radius:10px;background:#00c39a;color:#002;font-weight:800">Quay về</a>
+      <div class="phone-line">SĐT liên hệ: <span id="phoneText">0355567466</span></div>
+
+      <div class="controls">
+        <button class="btn secondary" id="copyBtn">Sao chép SĐT</button>
+        <button class="btn primary" id="confirmBtn" aria-disabled="true">Tôi đã chuyển tiền</button>
       </div>
     </div>
   </div>
 
-<script>
-/* CONFIG - demo values (replace if needed) */
-const DEMO_ACCOUNT = '1234567890';      // demo account number (no real money)
-const DEMO_PHONE = '0355567466';
-const WAIT_SECONDS = 20;                // 20 seconds hidden wait
+  <div class="toast" id="toast">Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!</div>
 
-/* elements */
-const copyAccountBtn = document.getElementById('copyAccountBtn');
-const copyPhoneBtn = document.getElementById('copyPhoneBtn');
-const saveQrBtn = document.getElementById('saveQrBtn');
-const confirmBtn = document.getElementById('confirmBtn');
-const toast = document.getElementById('toast');
-const fullScreen = document.getElementById('fullScreen');
-const backBtn = document.getElementById('backBtn');
-const statusText = document.getElementById('statusText');
-const qrImg = document.getElementById('qrImg');
-const phoneText = document.getElementById('phoneText');
-phoneText.textContent = DEMO_PHONE;
-/* start hidden timer */
-let allowed = false;
-setTimeout(()=> {
-  allowed = true;
-  // enable visual feedback on the confirm button (but we do NOT show a countdown)
-  confirmBtn.classList.add('active');
-  confirmBtn.classList.remove('primary');
-  confirmBtn.setAttribute('aria-disabled','false');
-  confirmBtn.style.cursor = 'pointer';
-  confirmBtn.style.boxShadow = '0 22px 60px rgba(0,165,255,0.22)';
-}, WAIT_SECONDS * 1000);
+  <div class="full" id="full">
+    <div class="box">
+      <h2>Hệ thống đang xác nhận giao dịch...</h2>
+      <p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p>
+      <div style="margin-top:14px;">
+        <button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#03c6a0;color:#022; font-weight:800;">Quay lại</button>
+      </div>
+    </div>
+  </div>
 
-/* helper: show toast */
-function showToast(msg, timeout=1800){
-  toast.textContent = msg;
-  toast.style.display = 'block';
-  setTimeout(()=> toast.style.display='none', timeout);
-}
+  <script>
+    const WAIT_SECONDS = 20;
+    const contactPhone = '0355567466';
+    const confirmBtn = document.getElementById('confirmBtn');
+    const toast = document.getElementById('toast');
+    const full = document.getElementById('full');
+    const copyBtn = document.getElementById('copyBtn');
+    const phoneText = document.getElementById('phoneText');
 
-/* copy functions */
-copyAccountBtn.addEventListener('click', ()=>{
-  navigator.clipboard?.writeText(DEMO_ACCOUNT).then(()=> {
-    showToast('Đã sao chép số tài khoản: ' + DEMO_ACCOUNT,1200);
-  }).catch(()=> {
-    showToast('Không thể sao chép tự động. Sao chép thủ công: ' + DEMO_ACCOUNT,2200);
-  });
-});
-copyPhoneBtn.addEventListener('click', ()=>{
-  navigator.clipboard?.writeText(DEMO_PHONE).then(()=> {
-    showToast('Đã sao chép SĐT: ' + DEMO_PHONE,1200);
-  }).catch(()=> {
-    showToast('Không thể sao chép tự động. Sao chép thủ công: ' + DEMO_PHONE,2200);
-  });
-});
+    phoneText.textContent = contactPhone;
+    let remaining = WAIT_SECONDS;
+    confirmBtn.disabled = true;
+    confirmBtn.setAttribute('aria-disabled','true');
 
-/* save QR to device */
-saveQrBtn.addEventListener('click', ()=>{
-  // create link and download current QR src
-  const a = document.createElement('a');
-  a.href = qrImg.src;
-  // ensure same-origin or data URL for direct download; browsers may block cross-origin downloads
-  a.download = 'ma_qr_demo.png';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-});
+    const t = setInterval(()=>{
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(t);
+        confirmBtn.disabled = false;
+        confirmBtn.classList.remove('primary');
+        confirmBtn.style.cursor = 'pointer';
+        confirmBtn.style.background = 'linear-gradient(90deg,#12d6a1,#00a6ff)';
+        confirmBtn.setAttribute('aria-disabled','false');
+      }
+    },1000);
 
-/* confirm action */
-confirmBtn.addEventListener('click', (e)=>{
-  if (!allowed) {
-    showToast('❌ Bạn chưa chuyển tiền hoặc thời gian xác nhận chưa đủ.',1800);
-    return;
-  }
-  // show full-screen confirmation
-  fullScreen.classList.add('show');
-  // simulate a verification step then show final message (demo)
-  statusText.style.display='none';
-});
+    confirmBtn.addEventListener('click', ()=>{
+      if (confirmBtn.getAttribute('aria-disabled') === 'true') {
+        toast.style.display = 'block';
+        setTimeout(()=>toast.style.display='none',1900);
+        return;
+      }
+      full.classList.add('show');
+      setTimeout(()=>{
+        const box = full.querySelector('.box');
+        box.innerHTML = '<h2>✅ Giao dịch đã được xác nhận</h2><p>Cảm ơn bạn — chúng tôi sẽ liên hệ sớm.</p>' +
+                        '<div style="margin-top:14px"><a href="./" style="padding:10px 14px;border-radius:10px;background:#06b39a;color:#001;font-weight:800;text-decoration:none;">Quay về</a></div>';
+      },3000);
+    });
 
-/* back button */
-backBtn.addEventListener('click', (e)=>{
-  e.preventDefault();
-  fullScreen.classList.remove('show');
-});
+    copyBtn.addEventListener('click', ()=>{
+      navigator.clipboard.writeText(contactPhone).then(()=>{
+        toast.textContent = 'Đã sao chép SĐT vào clipboard.';
+        toast.style.background = '#effff6';
+        toast.style.color = '#084d36';
+        toast.style.display = 'block';
+        setTimeout(()=>{ toast.style.display='none'; toast.textContent='Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!'; toast.style.background=''; toast.style.color=''; },1800);
+      });
+    });
 
-/* fallback: if QR fails to load, show placeholder text */
-qrImg.addEventListener('error', ()=>{
-  const box = qrImg.parentElement;
-  box.innerHTML = '<div style="padding:18px;color:#023; font-weight:800; background:#fff; border-radius:8px;">(Chưa có ảnh QR. Dán đường dẫn ảnh QR hoặc đổi src)</div>';
-});
-</script>
+    function closeFull(){ full.classList.remove('show'); }
+  </script>
 </body>
 </html>
