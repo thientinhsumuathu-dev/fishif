@@ -6,47 +6,69 @@
 <title>Cổng thanh toán - TRAN DINH HIEP</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+html,body{height:100%;overflow:auto}
 body{
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
   background:#000;
   color:#fff;
-  overflow:auto;
 }
 
-/* 🔥 Nền động kiểu bánh xe Đấu La */
-.bg-3d{
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at center,
-      rgba(0,255,255,0.3) 0%,
-      rgba(0,100,255,0.05) 40%,
-      rgba(0,0,0,1) 80%);
-  overflow:hidden;
-  z-index:0;
+/* 🌌 Hiệu ứng nền công nghệ sấm sét xanh */
+.bg-energy {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  background: radial-gradient(circle at center, rgba(0,255,255,0.15), rgba(0,0,0,0.9));
 }
-.bg-3d::before, .bg-3d::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:conic-gradient(from 0deg, #00f0ff, #00d9ff, #00baff, #0099ff, #00baff, #00d9ff, #00f0ff);
-  opacity:0.35;
-  animation:spin 6s linear infinite;
-  border-radius:50%;
-  filter:blur(60px);
+.bg-energy::before, .bg-energy::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: repeating-linear-gradient(
+    60deg,
+    rgba(0,255,255,0.2) 0 2px,
+    transparent 2px 6px
+  );
+  animation: moveLines 4s linear infinite;
+  mix-blend-mode: screen;
+  filter: blur(2px);
 }
-.bg-3d::after{
-  animation:spinReverse 8s linear infinite;
-  opacity:0.25;
+.bg-energy::after {
+  background: repeating-linear-gradient(
+    -60deg,
+    rgba(0,180,255,0.25) 0 2px,
+    transparent 2px 6px
+  );
+  animation: moveLinesReverse 5s linear infinite;
 }
-@keyframes spin{
-  0%{transform:rotate(0deg) scale(1);}
-  100%{transform:rotate(360deg) scale(1.05);}
+@keyframes moveLines {
+  from { transform: translateY(0) rotate(10deg); }
+  to { transform: translateY(-100%) rotate(10deg); }
 }
-@keyframes spinReverse{
-  0%{transform:rotate(360deg) scale(1);}
-  100%{transform:rotate(0deg) scale(1.1);}
+@keyframes moveLinesReverse {
+  from { transform: translateY(0) rotate(-10deg); }
+  to { transform: translateY(100%) rotate(-10deg); }
+}
+
+/* 💥 Hiệu ứng sấm sét chớp */
+.lightning {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0,255,255,0.25), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: flash 6s infinite;
+  z-index: 1;
+}
+@keyframes flash {
+  0%, 100% {opacity: 0;}
+  45% {opacity: 0;}
+  47% {opacity: 0.8;}
+  49% {opacity: 0;}
+  70% {opacity: 0;}
+  73% {opacity: 0.6;}
+  76% {opacity: 0;}
 }
 
 .wrap{
@@ -92,7 +114,8 @@ body{
 </head>
 <body>
 
-<div class="bg-3d"></div>
+<div class="bg-energy"></div>
+<div class="lightning"></div>
 
 <div class="wrap" role="main" aria-labelledby="t">
   <div class="card" id="t">
@@ -130,7 +153,6 @@ body{
   </div>
 </div>
 
-<!-- Popup báo cáo sự cố -->
 <div class="full" id="errorPopup">
   <div class="box">
     <h2>📞 Báo cáo sự cố</h2>
