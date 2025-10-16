@@ -1,137 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thanh toán</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cổng thanh toán — Demo</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: url('https://i.pinimg.com/originals/23/1a/1e/231a1e2fda24f5193bcf90b3a94b3f1e.gif') center/cover no-repeat fixed;
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    text-align: center;
-    overflow: hidden;
+  /* Reset + base */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    background: linear-gradient(180deg,#04121b 0%, #052c3c 55%, #02141a 100%);
+    color:#fff;
+    overflow:hidden;
   }
 
-  .overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1;
+  /* subtle moving light background */
+  .bg-animation{
+    position:fixed;inset:0;z-index:0;
+    background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03), transparent 6%),
+                      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02), transparent 10%);
+    animation: bgmove 10s linear infinite;
+    mix-blend-mode: screen;
   }
+  @keyframes bgmove {0%{transform:translateY(0)}50%{transform:translateY(6%)}100%{transform:translateY(0)}}
 
-  .anime-left, .anime-right {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 240px;
-    z-index: 0;
-    opacity: 0.9;
-    animation: float 5s ease-in-out infinite;
+  /* main card */
+  .card-wrap{position:relative;z-index:2;max-width:640px;margin:40px auto;padding:24px;border-radius:16px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));backdrop-filter:blur(6px);
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);text-align:center}
+
+  h1{font-size:20px;margin-bottom:8px;letter-spacing:0.2px}
+  p.lead{opacity:.95;color:#e6f9ff;margin-bottom:12px}
+
+  /* anime side images */
+  .anime-left,.anime-right{
+    position:fixed;top:50%;transform:translateY(-50%);width:220px;z-index:1;opacity:0.95;
+    filter:drop-shadow(0 30px 50px rgba(0,0,0,0.5));
+    animation: floaty 6s ease-in-out infinite;
   }
+  .anime-left{left:12px}
+  .anime-right{right:12px;transform:translateY(-50%) scaleX(-1)}
+  @keyframes floaty{0%{transform:translateY(-50%) rotate(-2deg)}50%{transform:translateY(-58%) rotate(2deg)}100%{transform:translateY(-50%) rotate(-2deg)}}
 
-  .anime-left { left: 20px; }
-  .anime-right { right: 20px; transform: translateY(-50%) scaleX(-1); }
+  /* QR */
+  .qr-box{display:flex;justify-content:center;margin:6px 0}
+  .qr{width:300px;height:300px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 60px rgba(0,0,0,0.4)}
+  .qr img{max-width:88%;max-height:88%;border-radius:6px;display:block}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(-50%) translateX(0); }
-    50% { transform: translateY(-55%) translateX(5px); }
-  }
+  /* note and phone */
+  .note{margin-top:14px;padding:12px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(255,255,255,0.98));color:#052b2b;font-weight:700}
+  .phone{margin-top:10px;padding:10px;background:#ffffff;border-radius:10px;color:#013233;font-weight:800}
 
-  .container {
-    position: relative;
-    z-index: 2;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.65);
-    padding: 30px;
-    border-radius: 20px;
-    display: inline-block;
-    box-shadow: 0 0 40px rgba(255,255,255,0.3);
-  }
+  /* controls */
+  .controls{display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+  .btn{padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;border:2px dashed rgba(2,30,30,0.06);color:#042b2b}
+  .btn.primary{background:linear-gradient(90deg,#00d3a6,#00a5ff);color:white;box-shadow:0 18px 40px rgba(0,165,255,0.14);cursor:not-allowed}
+  .btn.active{cursor:pointer;box-shadow:0 22px 60px rgba(0,165,255,0.22)}
 
-  h1 { margin-bottom: 10px; text-shadow: 0 0 10px #ff99ff; }
+  .status{margin-top:12px;font-weight:700;color:#ffe6ff}
 
-  img.qr {
-    width: 220px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(255,255,255,0.6);
-  }
+  /* toast */
+  .toast{position:fixed;left:50%;top:14%;transform:translateX(-50%);background:#fff0f0;color:#7a1212;padding:10px 14px;border-radius:10px;display:none;z-index:60}
 
-  p { margin: 10px 0; font-size: 17px; }
+  /* full-screen confirmation */
+  .fullscreen{position:fixed;inset:0;background:linear-gradient(180deg, rgba(3,10,14,0.96), rgba(2,8,20,0.98));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;opacity:0;pointer-events:none;transition:opacity .45s}
+  .fullscreen.show{opacity:1;pointer-events:auto}
+  .full-card{width:90%;max-width:720px;padding:22px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;color:#fff;box-shadow:0 40px 120px rgba(0,0,0,0.6)}
 
-  button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #ff66cc, #66ccff);
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover { transform: scale(1.05); }
-
-  #message {
-    font-size: 20px;
-    color: #ffccff;
-    margin-top: 15px;
+  .celebrate {margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .confetti{width:18px;height:18px;border-radius:50%;opacity:0.95;animation:pop 1.4s infinite}
+  @keyframes pop{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+/* responsive */
+  @media (max-width:520px){
+    .anime-left,.anime-right{display:none}
+    .qr{width:200px;height:200px}
+    .card-wrap{margin:18px}
   }
 </style>
 </head>
 <body>
-<img src="https://i.pinimg.com/originals/72/68/3c/72683cda1dfb33b7d2476a701ca6b2a8.gif" class="anime-left" alt="Anime Girl">
-<img src="https://i.pinimg.com/originals/72/68/3c/72683cda1dfb33b7d2476a701ca6b2a8.gif" class="anime-right" alt="Anime Girl">
-<div class="overlay"></div>
+  <!-- animated background + anime characters -->
+  <div class="bg-animation" aria-hidden="true"></div>
 
-<div class="container" id="main">
-  <h1>Để tiếp tục, xin hãy thanh toán</h1>
-  <img class="qr" id="qr" src="https://i.imgur.com/z8pO5Lk.png" alt="Mã QR">
-  <p>Nếu gặp vấn đề hãy liên hệ <b>0355567466</b></p>
-  <p>Nội dung thanh toán là <b>số điện thoại của bạn</b></p>
+  <!-- sample anime images (online) -->
+  <img class="anime-left" src="https://i.ibb.co/4Z3y2Km/anime1.png" alt="anime left">
+  <img class="anime-right" src="https://i.ibb.co/4Z3y2Km/anime1.png" alt="anime right">
 
-  <button onclick="copyText('1234567890')">📋 Sao chép số tài khoản</button>
-  <button onclick="copyText('0355567466')">📋 Sao chép SĐT liên hệ</button>
-  <button onclick="downloadQR()">💾 Lưu mã QR về máy</button>
-  <button id="confirmBtn" onclick="confirmPayment()">✅ Xác nhận đã chuyển tiền</button>
-  <p id="message"></p>
-</div>
+  <!-- main card -->
+  <div class="card-wrap" role="main" aria-labelledby="title">
+    <h1 id="title">Để tiếp tục, xin hãy thanh toán</h1>
+    <p class="lead">Quét mã QR bên dưới và chuyển tiền — trang demo chỉ minh họa giao diện.</p>
 
-<div class="container" id="success" style="display:none;">
-  <h1>💫 Hệ thống đang xác nhận giao dịch...</h1>
-  <p>❤️ Cảm ơn bạn đã thanh toán.</p>
-  <img src="https://i.pinimg.com/originals/27/1d/19/271d1948a1ad5e43a2ccf879f2d0605b.gif" width="250" alt="Anime Girl 2">
-</div>
+    <div class="qr-box" aria-hidden="false">
+      <!-- QR image: using public QR generator so no external file needed -->
+      <div class="qr"><img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Demo-Payment-QR" alt="Mã QR"></div>
+    </div>
+
+    <div class="note">Nếu gặp vấn đề hãy liên hệ <strong>0355567466</strong><br><small style="opacity:.9">Nội dung thanh toán là <b>số điện thoại của bạn</b></small></div>
+    <div class="phone">SĐT liên hệ: <span id="phoneText">0355567466</span></div>
+
+    <!-- controls: copy account, copy phone, download qr, confirm -->
+    <div class="controls" role="group" aria-label="Các chức năng">
+      <button class="btn ghost" id="copyAccountBtn" title="Sao chép số tài khoản">📋 Sao chép số tài khoản</button>
+      <button class="btn ghost" id="copyPhoneBtn" title="Sao chép số điện thoại">📋 Sao chép SĐT liên hệ</button>
+      <button class="btn ghost" id="saveQrBtn" title="Lưu mã QR">💾 Lưu mã QR về máy</button>
+      <button class="btn primary" id="confirmBtn" aria-disabled="true" title="Xác nhận đã chuyển tiền">✅ Xác nhận đã chuyển tiền</button>
+    </div>
+
+    <div class="status" id="statusText" aria-live="polite" style="display:none"></div>
+  </div>
+
+  <div class="toast" id="toast">Bạn chưa chuyển tiền hoặc thời gian xác nhận chưa đủ.</div>
+
+  <!-- full-screen confirmation (giao diện 2) -->
+  <div class="fullscreen" id="fullScreen">
+    <div class="full-card">
+      <h2>💫 Hệ thống đang xác nhận giao dịch...</h2>
+      <p style="opacity:.95;margin-top:8px">❤️ Cảm ơn bạn đã thanh toán.</p>
+
+      <!-- larger anime / illustration -->
+      <div style="margin-top:14px">
+        <img src="https://i.ibb.co/7nvc1rQ/anime-hero.png" alt="anime hero" style="width:260px;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
+      </div>
+
+      <div class="celebrate" id="celebs">
+        <div class="confetti" style="background:#ff7ab6"></div>
+        <div class="confetti" style="background:#7be6ff;animation-delay:.2s"></div>
+        <div class="confetti" style="background:#ffd27b;animation-delay:.4s"></div>
+      </div>
+
+      <div style="margin-top:18px">
+        <a href="#" id="backBtn" style="text-decoration:none;padding:10px 14px;border-radius:10px;background:#00c39a;color:#002;font-weight:800">Quay về</a>
+      </div>
+    </div>
+  </div>
 
 <script>
-let canConfirm = false;
-setTimeout(() => { canConfirm = true; }, 20000); // 20 giây
+/* CONFIG - demo values (replace if needed) */
+const DEMO_ACCOUNT = '1234567890';      // demo account number (no real money)
+const DEMO_PHONE = '0355567466';
+const WAIT_SECONDS = 20;                // 20 seconds hidden wait
 
-function confirmPayment() {
-  if (!canConfirm) {
-    document.getElementById("message").innerText = "❌ Bạn chưa chuyển tiền hoặc thời gian xác nhận chưa đủ.";
-  } else {
-    document.getElementById("main").style.display = "none";
-    document.getElementById("success").style.display = "block";
+/* elements */
+const copyAccountBtn = document.getElementById('copyAccountBtn');
+const copyPhoneBtn = document.getElementById('copyPhoneBtn');
+const saveQrBtn = document.getElementById('saveQrBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+const toast = document.getElementById('toast');
+const fullScreen = document.getElementById('fullScreen');
+const backBtn = document.getElementById('backBtn');
+const statusText = document.getElementById('statusText');
+const qrImg = document.getElementById('qrImg');
+const phoneText = document.getElementById('phoneText');
+phoneText.textContent = DEMO_PHONE;
+/* start hidden timer */
+let allowed = false;
+setTimeout(()=> {
+  allowed = true;
+  // enable visual feedback on the confirm button (but we do NOT show a countdown)
+  confirmBtn.classList.add('active');
+  confirmBtn.classList.remove('primary');
+  confirmBtn.setAttribute('aria-disabled','false');
+  confirmBtn.style.cursor = 'pointer';
+  confirmBtn.style.boxShadow = '0 22px 60px rgba(0,165,255,0.22)';
+}, WAIT_SECONDS * 1000);
+
+/* helper: show toast */
+function showToast(msg, timeout=1800){
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(()=> toast.style.display='none', timeout);
+}
+
+/* copy functions */
+copyAccountBtn.addEventListener('click', ()=>{
+  navigator.clipboard?.writeText(DEMO_ACCOUNT).then(()=> {
+    showToast('Đã sao chép số tài khoản: ' + DEMO_ACCOUNT,1200);
+  }).catch(()=> {
+    showToast('Không thể sao chép tự động. Sao chép thủ công: ' + DEMO_ACCOUNT,2200);
+  });
+});
+copyPhoneBtn.addEventListener('click', ()=>{
+  navigator.clipboard?.writeText(DEMO_PHONE).then(()=> {
+    showToast('Đã sao chép SĐT: ' + DEMO_PHONE,1200);
+  }).catch(()=> {
+    showToast('Không thể sao chép tự động. Sao chép thủ công: ' + DEMO_PHONE,2200);
+  });
+});
+
+/* save QR to device */
+saveQrBtn.addEventListener('click', ()=>{
+  // create link and download current QR src
+  const a = document.createElement('a');
+  a.href = qrImg.src;
+  // ensure same-origin or data URL for direct download; browsers may block cross-origin downloads
+  a.download = 'ma_qr_demo.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+/* confirm action */
+confirmBtn.addEventListener('click', (e)=>{
+  if (!allowed) {
+    showToast('❌ Bạn chưa chuyển tiền hoặc thời gian xác nhận chưa đủ.',1800);
+    return;
   }
-}
+  // show full-screen confirmation
+  fullScreen.classList.add('show');
+  // simulate a verification step then show final message (demo)
+  statusText.style.display='none';
+});
 
-function copyText(text) {
-  navigator.clipboard.writeText(text);
-  alert("Đã sao chép: " + text);
-}
+/* back button */
+backBtn.addEventListener('click', (e)=>{
+  e.preventDefault();
+  fullScreen.classList.remove('show');
+});
 
-function downloadQR() {
-  const link = document.createElement('a');
-  link.href = document.getElementById("qr").src;
-  link.download = "ma_qr.png";
-  link.click();
-}
+/* fallback: if QR fails to load, show placeholder text */
+qrImg.addEventListener('error', ()=>{
+  const box = qrImg.parentElement;
+  box.innerHTML = '<div style="padding:18px;color:#023; font-weight:800; background:#fff; border-radius:8px;">(Chưa có ảnh QR. Dán đường dẫn ảnh QR hoặc đổi src)</div>';
+});
 </script>
 </body>
 </html>
