@@ -19,8 +19,26 @@
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     z-index: 1;
+  }
+
+  .anime-left, .anime-right {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 240px;
+    z-index: 0;
+    opacity: 0.9;
+    animation: float 5s ease-in-out infinite;
+  }
+
+  .anime-left { left: 20px; }
+  .anime-right { right: 20px; transform: translateY(-50%) scaleX(-1); }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-55%) translateX(5px); }
   }
 
   .container {
@@ -28,19 +46,19 @@
     z-index: 2;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.65);
     padding: 30px;
     border-radius: 20px;
     display: inline-block;
-    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+    box-shadow: 0 0 40px rgba(255,255,255,0.3);
   }
 
-  h1 { margin-bottom: 10px; }
+  h1 { margin-bottom: 10px; text-shadow: 0 0 10px #ff99ff; }
 
-  img {
+  img.qr {
     width: 220px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(255,255,255,0.5);
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
   }
 
   p { margin: 10px 0; font-size: 17px; }
@@ -67,10 +85,13 @@
 </style>
 </head>
 <body>
+<img src="https://i.pinimg.com/originals/72/68/3c/72683cda1dfb33b7d2476a701ca6b2a8.gif" class="anime-left" alt="Anime Girl">
+<img src="https://i.pinimg.com/originals/72/68/3c/72683cda1dfb33b7d2476a701ca6b2a8.gif" class="anime-right" alt="Anime Girl">
 <div class="overlay"></div>
+
 <div class="container" id="main">
   <h1>Để tiếp tục, xin hãy thanh toán</h1>
-  <img id="qr" src="https://i.imgur.com/z8pO5Lk.png" alt="Mã QR">
+  <img class="qr" id="qr" src="https://i.imgur.com/z8pO5Lk.png" alt="Mã QR">
   <p>Nếu gặp vấn đề hãy liên hệ <b>0355567466</b></p>
   <p>Nội dung thanh toán là <b>số điện thoại của bạn</b></p>
 
@@ -84,12 +105,11 @@
 <div class="container" id="success" style="display:none;">
   <h1>💫 Hệ thống đang xác nhận giao dịch...</h1>
   <p>❤️ Cảm ơn bạn đã thanh toán.</p>
-  <img src="https://i.pinimg.com/originals/72/68/3c/72683cda1dfb33b7d2476a701ca6b2a8.gif" alt="Anime girl">
+  <img src="https://i.pinimg.com/originals/27/1d/19/271d1948a1ad5e43a2ccf879f2d0605b.gif" width="250" alt="Anime Girl 2">
 </div>
 
 <script>
 let canConfirm = false;
-
 setTimeout(() => { canConfirm = true; }, 20000); // 20 giây
 
 function confirmPayment() {
