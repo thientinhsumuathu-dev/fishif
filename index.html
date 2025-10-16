@@ -1,215 +1,385 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chuyển tiền tham gia</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thanh toán - Xác nhận chuyển tiền</title>
   <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .container {
-      background: white;
-      padding: 25px;
-      border-radius: 20px;
-      text-align: center;
-      width: 350px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-      position: relative;
-    }
-    h1 {
-      color: #00796b;
-      font-size: 22px;
-      margin-bottom: 5px;
-    }
-    p {
-      color: #555;
-      font-size: 14px;
-      margin-top: 0;
-    }
-    .qr-box {
-      margin: 15px auto;
-      width: 200px;
-      height: 200px;
-      padding: 10px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0, 200, 180, 0.6);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 200, 180, 0.6); }
-      50% { box-shadow: 0 0 35px rgba(0, 200, 180, 1); }
-    }
-    .info {
-      font-weight: bold;
-      color: #333;
-      font-size: 18px;
-    }
-    .account {
-      font-size: 20px;
-      color: #e91e63;
-      letter-spacing: 2px;
-      text-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
-    }
-    .bank {
-      color: #777;
-      margin-bottom: 15px;
-    }
-    button {
-      background-color: #009688;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 15px;
-      margin: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: #00796b;
-    }
-    #confirmBtn {
-      background-color: #ff4081;
-    }
-    .floating {
-      position: absolute;
-      animation: float 5s infinite;
-      opacity: 0.7;
-    }
-    @keyframes float {
-      0% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(-30px); opacity: 1; }
-      100% { transform: translateY(0); opacity: 0.7; }
-    }
-    footer {
-      font-size: 11px;
-      color: #888;
-      margin-top: 10px;
+    /* ----------------- Reset + fonts ----------------- */
+    *{box-sizing:border-box}html,body{height:100%}body{
+      margin:0;font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f7f3ff 0%, #f0f7ff 50%, #e8fff7 100%);
+      display:flex;align-items:center;justify-content:center;padding:28px;
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     }
 
-    /* Trang cảm ơn */
-    #thankPage {
-      display: none;
-      text-align: center;
-      animation: fadeIn 1s ease-in;
+    /* ----------------- Card ----------------- */
+    .card {
+      width:100%;
+      max-width:420px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), #ffffff);
+      border-radius:18px;
+      box-shadow: 0 12px 40px rgba(39,35,57,0.12);
+      padding:18px;
+      position:relative;
+      overflow:visible;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .hearts {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .heart {
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background-image: url('https://i.imgur.com/zc7eC4Q.png');
-      background-size: cover;
-      animation: fly 6s linear infinite;
-    }
-    @keyframes fly {
-      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
 
-    30% { opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1) rotate(360deg); opacity: 0; }
+    /* glowing decorative shapes (top-right) */
+    .glow {
+      position:absolute;right:-50px;top:-40px;width:220px;height:220px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,195,215,0.18), transparent 30%),
+                  radial-gradient(circle at 70% 70%, rgba(130,197,255,0.12), transparent 30%);
+      filter: blur(20px); z-index:0; pointer-events:none;
+    }
+
+    header {
+      text-align:center;padding-top:6px;position:relative;z-index:2;
+    }
+    header h1 {
+      margin:0;font-size:20px;color:#2b2b2b;font-weight:700;
+      letter-spacing:0.2px;
+    }
+    header p.sub {
+      margin:6px 0 0;color:#6f6f7a;font-size:13px;
+    }
+
+    /* QR box */
+    .qr-wrap {
+      margin:16px auto 8px; width:260px; height:260px;
+      border-radius:16px; background:linear-gradient(180deg,#fff,#fcfcff);
+      padding:14px; display:flex;align-items:center;justify-content:center;
+      box-shadow: 0 10px 30px rgba(60,120,180,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+      position:relative; z-index:2;
+      border: 3px solid rgba(255,255,255,0.6);
+    }
+    .qr-wrap::after{
+      content:""; position:absolute; inset:0; border-radius:16px;
+      box-shadow: 0 0 32px rgba(102, 51, 153, 0.12);
+      pointer-events:none;
+    }
+
+    .qr {
+      width:100%; height:100%; object-fit:contain; border-radius:10px; background:#fff;
+    }
+
+    /* account info */
+    .info { text-align:center; margin-top:10px; z-index:2; position:relative; }
+    .name { font-weight:700; color:#2b2350; font-size:16px; letter-spacing:0.6px; }
+    .acc { margin-top:6px; font-size:18px; color:#ff2f7a; font-weight:700; letter-spacing:2px;
+          text-shadow: 0 0 10px rgba(255,47,122,0.12); }
+    .bank { font-size:13px; color:#6b6b7a; margin-top:6px; }
+
+    /* buttons row */
+    .row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px; z-index:2; }
+    .btn {
+      border: none; cursor:pointer; padding:10px 14px; border-radius:10px; font-size:14px;
+      display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(39,35,57,0.06);
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn.copy { background: linear-gradient(90deg,#d6fef1,#cfeef8); color:#0b6b70; }
+    .btn.copy:hover { box-shadow: 0 10px 30px rgba(11,107,112,0.12); }
+    .btn.guide { background: linear-gradient(90deg,#fff0f8,#ffe8f0); color:#9b2d5b; }
+    .btn.confirm {
+      background: linear-gradient(90deg,#ff6ea2,#ff2f7a); color:white; font-weight:700;
+      box-shadow: 0 10px 30px rgba(255,47,122,0.20);
+    }
+    .btn.small { padding:8px 12px; font-size:13px; border-radius:8px; }
+
+    /* note & footer */
+    .note { margin-top:12px; font-size:13px; color:#6b6b7a; text-align:center; line-height:1.4; z-index:2; }
+    .footer { font-size:11px; color:#9a9aa8; margin-top:10px; text-align:center; }
+/* modal error */
+    .modal {
+      position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(0.9); min-width:260px;
+      background:white;border-radius:12px;padding:18px;box-shadow:0 18px 60px rgba(23,16,52,0.25);
+      z-index:9999; display:none; animation:pop .18s ease forwards;
+    }
+    .modal h3{ margin:0 0 8px; color:#2b2b2b; font-size:16px }
+    .modal p{ margin:0; color:#6b6b7a; font-size:14px }
+    @keyframes pop { to { transform:translate(-50%,-50%) scale(1) } }
+
+    /* thank you screen (same single file) */
+    .thanks {
+      position:fixed; inset:0; background: linear-gradient(180deg,#fff0f9 0%, rgba(255,255,255,0.6) 40% , transparent 100%);
+      display:flex;align-items:center;justify-content:center;z-index:2000; flex-direction:column; padding:28px;
+    }
+    .thanks-card {
+      max-width:520px; width:90%; background:rgba(255,255,255,0.98); border-radius:18px; text-align:center;
+      box-shadow:0 20px 60px rgba(39,35,57,0.12); padding:28px;
+    }
+    .thanks h2 { margin:0;color:#333;font-size:20px }
+    .thanks p { color:#666;margin:8px 0 0 }
+    .anime-gif { width:180px; height:auto; margin-top:12px; border-radius:10px; }
+
+    /* animated hearts/confetti */
+    .floating-layer { position:fixed; inset:0; pointer-events:none; z-index:1500; overflow:hidden; }
+
+    /* responsive */
+    @media (max-width:420px){
+      .qr-wrap{width:220px;height:220px} .card{padding:14px}
+      .btn{font-size:13px;padding:9px 12px}
     }
   </style>
 </head>
 <body>
 
-  <div class="container" id="mainPage">
-    <img src="https://i.imgur.com/UMUoF3D.png" class="floating" style="top:20px; left:30px; width:30px;">
-    <img src="https://i.imgur.com/UMUoF3D.png" class="floating" style="bottom:30px; right:40px; width:25px;">
-    <img src="https://i.imgur.com/dmGc2o7.png" class="floating" style="top:80px; right:30px; width:35px;">
+  <!-- Main card -->
+  <div class="card" role="main" aria-labelledby="title">
+    <div class="glow" aria-hidden="true"></div>
 
-    <h1>Để tham gia hãy chuyển tiền</h1>
-    <p>Dưới đây là mã QR và số tài khoản</p>
+    <header>
+      <h1 id="title">Để tham gia hãy chuyển tiền</h1>
+      <p class="sub">Dưới đây là mã QR & số tài khoản — chuyển xong bấm "Xác nhận đã chuyển"</p>
+    </header>
 
-    <div class="qr-box">
-      <img src="https://i.imgur.com/w1Xy9vB.png" width="100%" height="100%" alt="QR chuyển tiền">
+    <!-- QR box (replace src with your QR file name: e.g. "qr.png") -->
+    <div class="qr-wrap" aria-hidden="false">
+      <!-- === IMPORTANT: replace the src below with your actual QR image file name (put it next to this html file) === -->
+      <img id="qrImg" class="qr" src="qr.png" alt="Mã QR chuyển tiền (quét để chuyển)" />
+      <!-- If you want me to embed the exact image you uploaded, tell me and mình sẽ chèn trực tiếp -->
     </div>
 
-    <div class="info">TRAN DINH HIEP</div>
-    <div class="account" id="accNumber">51015202530369</div>
-    <div class="bank">VPBank</div>
+    <div class="info" aria-live="polite">
+      <div class="name" id="accName">TRAN DINH HIEP</div>
+      <div class="acc" id="accNumber">51015202530369</div>
+      <div class="bank" id="bankName">VPBank</div>
+    </div>
 
-    <button onclick="copyText('accNumber')">📋 Sao chép số tài khoản</button>
-    <button onclick="copyInstruction()">📱 Sao chép hướng dẫn nội dung</button>
-    <button id="confirmBtn" onclick="confirmTransfer()">✅ Xác nhận đã chuyển</button>
+    <div class="row">
+      <button class="btn copy small" onclick="downloadQR()">
+        📥 Tải QR
+      </button>
 
-    <p style="font-size:13px;margin-top:10px;">
-      Với <b>nội dung chuyển</b> là <i>số điện thoại của bạn</i>, chúng tôi sẽ liên hệ cho bạn.
+      <button class="btn copy small" onclick="printPage()">
+        🖨 In trang
+      </button>
+
+      <button class="btn copy" onclick="copyText('#accNumber')">
+        📋 Sao chép số tài khoản
+      </button>
+
+      <button class="btn guide" onclick="copyInstruction()">
+        ✉️ Sao chép hướng dẫn nội dung
+      </button>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <!-- Confirm button always visible -->
+      <button id="confirmBtn" class="btn confirm" onclick="handleConfirm()">
+        ✅ Xác nhận đã chuyển
+      </button>
+    </div>
+
+    <p class="note">
+      Với <strong>nội dung chuyển</strong> là <em>số điện thoại của bạn</em>, chúng tôi sẽ liên hệ cho bạn.
     </p>
 
-    <footer>
-      Kiểm tra kỹ tên và số tài khoản trước khi chuyển. Chúng tôi không chịu trách nhiệm nếu chuyển nhầm.
-    </footer>
+    <div class="footer">Kiểm tra kỹ tên & số tài khoản trước khi chuyển. Chúng tôi không chịu trách nhiệm nếu chuyển nhầm.</div>
   </div>
 
-  <!-- Trang cảm ơn -->
-  <div class="container" id="thankPage">
-    <h1>🎀 Cảm ơn bạn 🎀</h1>
-    <p>Hệ thống đang kiểm tra thanh toán của bạn...</p>
-    <img src="https://i.pinimg.com/originals/a1/0e/1b/a10e1bc4f2aee91115b963760b7741da.gif" width="180" alt="anime cute">
-    <div class="hearts" id="hearts"></div>
-    <p style="margin-top:10px;">Vui lòng chờ trong giây lát 💖</p>
+  <!-- modal lỗi (bấm trước 10s) -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <h3 id="modalTitle">⏳ Chưa thể xác nhận</h3>
+    <p id="modalMsg">Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi ít giây rồi thử lại.</p>
   </div>
+
+  <!-- Thank you overlay (single-file approach) -->
+  <div class="thanks" id="thanksScreen" style="display:none;">
+    <div class="thanks-card" role="status" aria-live="polite">
+      <h2>💖 Cảm ơn bạn! 💖</h2>
+      <p>Hệ thống đang kiểm tra thanh toán của bạn…</p>
+<!-- === Replace this GIF with your desired anime GIF (e.g. boa hancock chibi gif) === -->
+      <img id="animeGif" class="anime-gif" src="anime-cute.gif" alt="Anime cute" />
+
+      <p style="margin-top:12px;color:#555">Chúng tôi sẽ liên hệ với bạn sớm. Vui lòng đợi trong giây lát.</p>
+    </div>
+  </div>
+
+  <!-- floating layer for hearts/confetti -->
+  <div class="floating-layer" id="floating"></div>
 
   <script>
-    let canConfirm = false;
+    /* =========================
+       CONFIG (Bạn có thể chỉnh ở đây)
+       ========================= */
+    const ALLOW_AFTER_MS = 10000; // 10s trước khi cho xác nhận hợp lệ
+    const ACCOUNT_NAME = "TRAN DINH HIEP";
+    const ACCOUNT_NUMBER = "51015202530369";
+    const BANK_NAME = "VPBank";
 
-    // Cho phép xác nhận sau 10 giây
-    setTimeout(() => { canConfirm = true; }, 10000);
+    // Nếu bạn muốn mình chèn đường dẫn ảnh trực tiếp, đổi qrImagePath / animeGifPath
+    // Mặc định: đặt file qr.png và anime-cute.gif vào cùng folder với file html này
+    const qrImagePath = "qr.png";        // <-- đổi thành file QR bạn muốn
+    const animeGifPath = "anime-cute.gif"; // <-- đổi thành GIF anime bạn muốn
 
-    function copyText(id) {
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text);
-      alert("Đã sao chép số tài khoản: " + text);
+    /* =========================
+       Init UI
+       ========================= */
+    document.getElementById("accName").innerText = ACCOUNT_NAME;
+    document.getElementById("accNumber").innerText = ACCOUNT_NUMBER;
+    document.getElementById("bankName").innerText = BANK_NAME;
+    document.getElementById("qrImg").src = qrImagePath;
+    document.getElementById("animeGif").src = animeGifPath;
+
+    /* =========================
+       Clipboard functions
+       ========================= */
+    function copyText(selector){
+      try {
+        const el = (selector.startsWith('#') || selector.startsWith('.')) ? document.querySelector(selector) : document.getElementById(selector);
+        const text = el ? el.innerText.trim() : selector;
+        navigator.clipboard.writeText(text).then(() => {
+          toast("Đã sao chép: " + text);
+        }).catch(()=>{ fallbackCopy(text); });
+      } catch(e){ fallbackCopy(selector); }
     }
-
-    function copyInstruction() {
+    function copyInstruction(){
       const text = "Nội dung chuyển: SỐ ĐIỆN THOẠI CỦA BẠN";
-      navigator.clipboard.writeText(text);
-      alert("Đã sao chép hướng dẫn nội dung chuyển!");
+      navigator.clipboard.writeText(text).then(()=>{ toast("Đã sao chép hướng dẫn nội dung"); })
+        .catch(()=>{ fallbackCopy(text); });
+    }
+    function fallbackCopy(text){
+      const ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast("Đã sao chép"); } catch(e){ alert("Không thể sao chép tự động — hãy bôi đen và sao chép: " + text); }
+      ta.remove();
     }
 
-    function confirmTransfer() {
-      if (!canConfirm) {
-        alert("⏳ Xin lỗi, bạn chưa thể xác nhận lúc này! Vui lòng đợi vài giây rồi thử lại.");
+    /* =========================
+       Download / Print helpers
+       ========================= */
+    function downloadQR(){
+      const img = document.getElementById("qrImg");
+      const url = img.src;
+      // tạo link download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "qr.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast("Bắt đầu tải ảnh QR (nếu trình duyệt cho phép).");
+    }
+    function printPage(){
+      window.print();
+    }
+
+    /* =========================
+       Confirm logic: allow only after ALLOW_AFTER_MS
+       ========================= */
+    let pageOpenedAt = Date.now();
+    let allowed = false;
+    setTimeout(()=>{ allowed = true; toast("Bạn đã có thể xác nhận."); }, ALLOW_AFTER_MS);
+
+    function handleConfirm(){
+      const elapsed = Date.now() - pageOpenedAt;
+      if(!allowed){
+        // show modal lỗi
+        showModal("⏳ Chưa thể xác nhận", "Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi " + Math.ceil((ALLOW_AFTER_MS - elapsed)/1000) + "s nữa.");
+        // animate modal (shake) for emphasis
+        shakeModal();
         return;
       }
-      document.getElementById("mainPage").style.display = "none";
-      document.getElementById("thankPage").style.display = "block";
-      startHearts();
+      // success: show thanks page with confetti/hearts
+      showThanks();
+    }
+/* =========================
+       Modal + toast small helper
+       ========================= */
+    const modal = document.getElementById("modal");
+    function showModal(title, msg){
+      modal.querySelector("h3").innerText = title;
+      modal.querySelector("p").innerText = msg;
+      modal.style.display = "block";
+      modal.setAttribute("aria-hidden","false");
+      setTimeout(()=>{ hideModal(); }, 2400);
+    }
+    function hideModal(){ modal.style.display = "none"; modal.setAttribute("aria-hidden","true"); }
+
+    function shakeModal(){
+      modal.style.transform = "translate(-50%,-50%) scale(1) rotate(-1deg)";
+      setTimeout(()=>{ modal.style.transform = "translate(-50%,-50%) scale(1) rotate(1deg)"; }, 80);
+      setTimeout(()=>{ modal.style.transform = "translate(-50%,-50%) scale(1) rotate(0deg)"; }, 160);
     }
 
-    function startHearts() {
-      const hearts = document.getElementById("hearts");
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = 4 + Math.random() * 3 + "s";
-        hearts.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-      }, 300);
+    /* small toast (temporary message bottom) */
+    let toastTimer = null;
+    function toast(msg){
+      let el = document.getElementById("_toast_");
+      if(!el){
+        el = document.createElement("div"); el.id="_toast_";
+        el.style.position="fixed"; el.style.left="50%"; el.style.bottom="22px";
+        el.style.transform="translateX(-50%)"; el.style.padding="10px 14px";
+        el.style.background="rgba(0,0,0,0.7)"; el.style.color="#fff"; el.style.borderRadius="10px";
+        el.style.fontSize="13px"; el.style.zIndex=99999; document.body.appendChild(el);
+      }
+      el.innerText = msg;
+      el.style.opacity = "1";
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ el.style.opacity="0"; }, 2200);
     }
-  </script>
+
+    /* =========================
+       THANKS screen & floating effects
+       ========================= */
+    function showThanks(){
+      document.querySelector(".card").style.filter="blur(6px)"; // optional
+      const el = document.getElementById("thanksScreen");
+      el.style.display = "flex";
+
+      // start floating hearts/confetti
+      startFloating();
+    }
+
+    function startFloating(){
+      const layer = document.getElementById("floating");
+      // create particle every 220ms
+      const colors = ["#ff7ab6","#ffd1f0","#ffd36b","#a0d3ff"];
+      const total = 30;
+      let created = 0;
+      const interval = setInterval(()=>{
+        if(created++ > total){ clearInterval(interval); return; }
+        const node = document.createElement("div");
+        const size = 18 + Math.random()*30;
+        node.style.width = node.style.height = size + "px";
+        node.style.position = "absolute";
+        node.style.left = Math.random()*100 + "vw";
+        node.style.bottom = "-20px";
+        node.style.pointerEvents = "none";
+        node.style.opacity = Math.random() * 0.95 + 0.2;
+        node.style.transform = "translateY(0) rotate(0deg)";
+        node.style.borderRadius = "6px";
+        // use background circle/heart via inline SVG data or simple gradient box
+        node.style.background = radial-gradient(circle at 30% 30%, #fff, ${colors[Math.floor(Math.random()*colors.length)]});
+        // random animation (translate up)
+        const duration = 3000 + Math.random()*3000;
+        node.style.transition = transform ${duration}ms cubic-bezier(.2,.9,.3,1), opacity ${duration}ms linear;
+        layer.appendChild(node);
+        requestAnimationFrame(()=>{
+          node.style.transform = translateY(-120vh) rotate(${ (Math.random()*360).toFixed(0)}deg);
+          node.style.opacity = "0";
+        });
+        setTimeout(()=>{ node.remove(); }, duration + 200);
+      }, 180);
+    }
+
+    /* =========================
+       Accessibility: allow Enter on confirm
+       ========================= */
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        handleConfirm();
+      }
+    });
+
+    /* =========================
+       NOTES:
+       - Replace 'qr.png' with your QR image file (put in same folder)
+       - Replace 'anime-cute.gif' with the animation GIF you want
+       - If you want me to embed the exact QR you sent, reply 'CHÈN QR' và mình sẽ chèn sẵn
+       ========================= */
+</script>
 </body>
 </html>
