@@ -1,131 +1,79 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Thanh toán - Xác nhận chuyển tiền</title>
-  <style>
-    /* ----------------- Reset + fonts ----------------- */
-    *{box-sizing:border-box}html,body{height:100%}body{
-      margin:0;font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#f7f3ff 0%, #f0f7ff 50%, #e8fff7 100%);
-      display:flex;align-items:center;justify-content:center;padding:28px;
-      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thanh toán - Xác nhận chuyển tiền</title>
+<style>
+  :root{
+    --bg1:#fff6fb; --bg2:#f3f9ff; --accent1:#ff4f8c; --accent2:#5fe0c6; --muted:#6b6b7a;
+  }
+  *{box-sizing:border-box}html,body{height:100%}
+  body{
+    margin:0;font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    background: linear-gradient(180deg,var(--bg2),var(--bg1));
+    display:flex;align-items:center;justify-content:center;padding:30px;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .card{
+    width:100%;max-width:480px;background:linear-gradient(180deg,#fff,#fffaf8);
+    border-radius:16px;padding:20px;box-shadow:0 18px 50px rgba(20,12,50,0.10);
+    position:relative;overflow:visible;
+  }
+  .glow{ position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,110,170,0.14), transparent 30%),
+                radial-gradient(circle at 70% 70%, rgba(120,200,255,0.10), transparent 30%);
+    filter: blur(20px); z-index:0; pointer-events:none;
+  }
+  header{ text-align:center; position:relative; z-index:2 }
+  header h1{ margin:0; font-size:20px; color:#2b2b3a; font-weight:700 }
+  header p.sub{ margin:6px 0 0; color:var(--muted); font-size:13px }
 
-    /* ----------------- Card ----------------- */
-    .card {
-      width:100%;
-      max-width:420px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), #ffffff);
-      border-radius:18px;
-      box-shadow: 0 12px 40px rgba(39,35,57,0.12);
-      padding:18px;
-      position:relative;
-      overflow:visible;
-    }
+  .qr-wrap{ margin:18px auto; width:250px; height:250px; border-radius:14px; padding:12px;
+    background:linear-gradient(180deg,#fff,#fbfbff); display:flex;align-items:center;justify-content:center;
+    box-shadow: 0 10px 30px rgba(60,120,180,0.05); position:relative; z-index:2; border: 3px solid rgba(255,255,255,0.6);
+  }
+  .qr { width:100%; height:100%; object-fit:contain; border-radius:10px; background:#fff; display:block; }
 
-    /* glowing decorative shapes (top-right) */
-    .glow {
-      position:absolute;right:-50px;top:-40px;width:220px;height:220px;border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,195,215,0.18), transparent 30%),
-                  radial-gradient(circle at 70% 70%, rgba(130,197,255,0.12), transparent 30%);
-      filter: blur(20px); z-index:0; pointer-events:none;
-    }
+  .info{text-align:center;margin-top:12px;z-index:2;position:relative;}
+  .name{font-weight:700;color:#2b2b3a;font-size:16px}
+  .acc{margin-top:6px;font-size:20px;color:var(--accent1);font-weight:800;letter-spacing:2px;text-shadow:0 0 8px rgba(255,79,140,0.08)}
+  .bank{font-size:13px;color:var(--muted); margin-top:6px}
 
-    header {
-      text-align:center;padding-top:6px;position:relative;z-index:2;
-    }
-    header h1 {
-      margin:0;font-size:20px;color:#2b2b2b;font-weight:700;
-      letter-spacing:0.2px;
-    }
-    header p.sub {
-      margin:6px 0 0;color:#6f6f7a;font-size:13px;
-    }
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  button{border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:8px;transition:transform .12s ease,box-shadow .12s ease}
+  button:active{transform:translateY(1px)}
+  .btn-download{background:linear-gradient(90deg,#e6f9ef,#dff3ff);color:#0b6b70}
+  .btn-print{background:linear-gradient(90deg,#fff5fb,#fff0f4);color:#9b2d5b}
+  .btn-copy{background:linear-gradient(90deg,#fff9f2,#fff2ff);color:#4b2a50}
+  .btn-confirm{background:linear-gradient(90deg,var(--accent1),#ff2f7a);color:#fff;font-weight:800;box-shadow:0 10px 30px rgba(255,79,140,0.18)}
 
-    /* QR box */
-    .qr-wrap {
-      margin:16px auto 8px; width:260px; height:260px;
-      border-radius:16px; background:linear-gradient(180deg,#fff,#fcfcff);
-      padding:14px; display:flex;align-items:center;justify-content:center;
-      box-shadow: 0 10px 30px rgba(60,120,180,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
-      position:relative; z-index:2;
-      border: 3px solid rgba(255,255,255,0.6);
-    }
-    .qr-wrap::after{
-      content:""; position:absolute; inset:0; border-radius:16px;
-      box-shadow: 0 0 32px rgba(102, 51, 153, 0.12);
-      pointer-events:none;
-    }
+  .note{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+  .footer{margin-top:10px;font-size:11px;color:#9a9aa8;text-align:center}
 
-    .qr {
-      width:100%; height:100%; object-fit:contain; border-radius:10px; background:#fff;
-    }
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:9999}
+  .modal{background:white;border-radius:12px;padding:16px 18px;box-shadow:0 22px 70px rgba(20,10,40,0.28);min-width:260px;text-align:center}
+  .modal h3{margin:0;font-size:16px}
+  .modal p{margin:8px 0 0;color:#666}
 
-    /* account info */
-    .info { text-align:center; margin-top:10px; z-index:2; position:relative; }
-    .name { font-weight:700; color:#2b2350; font-size:16px; letter-spacing:0.6px; }
-    .acc { margin-top:6px; font-size:18px; color:#ff2f7a; font-weight:700; letter-spacing:2px;
-          text-shadow: 0 0 10px rgba(255,47,122,0.12); }
-    .bank { font-size:13px; color:#6b6b7a; margin-top:6px; }
+  /* thanks overlay */
+  .thanks-wrap{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:9998;background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,245,250,0.7))}
+  .thanks-card{width:90%;max-width:540px;background:#fff;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 60px rgba(30,20,50,0.12)}
+  .thanks-card h2{margin:0;font-size:20px}
+  .thanks-card p{color:#666;margin-top:8px}
+  .anime-gif{width:200px;height:auto;margin-top:14px;border-radius:10px;display:block;margin-left:auto;margin-right:auto}
 
-    /* buttons row */
-    .row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px; z-index:2; }
-    .btn {
-      border: none; cursor:pointer; padding:10px 14px; border-radius:10px; font-size:14px;
-      display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(39,35,57,0.06);
-      transition: transform .14s ease, box-shadow .14s ease;
-    }
-    .btn:active{ transform:translateY(1px) }
-    .btn.copy { background: linear-gradient(90deg,#d6fef1,#cfeef8); color:#0b6b70; }
-    .btn.copy:hover { box-shadow: 0 10px 30px rgba(11,107,112,0.12); }
-    .btn.guide { background: linear-gradient(90deg,#fff0f8,#ffe8f0); color:#9b2d5b; }
-    .btn.confirm {
-      background: linear-gradient(90deg,#ff6ea2,#ff2f7a); color:white; font-weight:700;
-      box-shadow: 0 10px 30px rgba(255,47,122,0.20);
-    }
-    .btn.small { padding:8px 12px; font-size:13px; border-radius:8px; }
-
-    /* note & footer */
-    .note { margin-top:12px; font-size:13px; color:#6b6b7a; text-align:center; line-height:1.4; z-index:2; }
-    .footer { font-size:11px; color:#9a9aa8; margin-top:10px; text-align:center; }
-/* modal error */
-    .modal {
-      position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(0.9); min-width:260px;
-      background:white;border-radius:12px;padding:18px;box-shadow:0 18px 60px rgba(23,16,52,0.25);
-      z-index:9999; display:none; animation:pop .18s ease forwards;
-    }
-    .modal h3{ margin:0 0 8px; color:#2b2b2b; font-size:16px }
-    .modal p{ margin:0; color:#6b6b7a; font-size:14px }
-    @keyframes pop { to { transform:translate(-50%,-50%) scale(1) } }
-
-    /* thank you screen (same single file) */
-    .thanks {
-      position:fixed; inset:0; background: linear-gradient(180deg,#fff0f9 0%, rgba(255,255,255,0.6) 40% , transparent 100%);
-      display:flex;align-items:center;justify-content:center;z-index:2000; flex-direction:column; padding:28px;
-    }
-    .thanks-card {
-      max-width:520px; width:90%; background:rgba(255,255,255,0.98); border-radius:18px; text-align:center;
-      box-shadow:0 20px 60px rgba(39,35,57,0.12); padding:28px;
-    }
-    .thanks h2 { margin:0;color:#333;font-size:20px }
-    .thanks p { color:#666;margin:8px 0 0 }
-    .anime-gif { width:180px; height:auto; margin-top:12px; border-radius:10px; }
-
-    /* animated hearts/confetti */
-    .floating-layer { position:fixed; inset:0; pointer-events:none; z-index:1500; overflow:hidden; }
-
-    /* responsive */
-    @media (max-width:420px){
-      .qr-wrap{width:220px;height:220px} .card{padding:14px}
-      .btn{font-size:13px;padding:9px 12px}
-    }
-  </style>
+  /* floating particles */
+  .floating{position:fixed;inset:0;pointer-events:none;z-index:9997;overflow:hidden}
+@media (max-width:420px){
+    .qr-wrap{width:200px;height:200px}
+    .acc{font-size:18px}
+  }
+</style>
 </head>
 <body>
 
-  <!-- Main card -->
   <div class="card" role="main" aria-labelledby="title">
     <div class="glow" aria-hidden="true"></div>
 
@@ -134,11 +82,9 @@
       <p class="sub">Dưới đây là mã QR & số tài khoản — chuyển xong bấm "Xác nhận đã chuyển"</p>
     </header>
 
-    <!-- QR box (replace src with your QR file name: e.g. "qr.png") -->
-    <div class="qr-wrap" aria-hidden="false">
-      <!-- === IMPORTANT: replace the src below with your actual QR image file name (put it next to this html file) === -->
-      <img id="qrImg" class="qr" src="qr.png" alt="Mã QR chuyển tiền (quét để chuyển)" />
-      <!-- If you want me to embed the exact image you uploaded, tell me and mình sẽ chèn trực tiếp -->
+    <div class="qr-wrap">
+      <!-- Replace 'qr.png' with your QR filename. If file missing, placeholder shows -->
+      <img id="qrImg" class="qr" src="qr.png" alt="Mã QR chuyển tiền (quét để chuyển)" onerror="qrPlaceholder()" />
     </div>
 
     <div class="info" aria-live="polite">
@@ -148,238 +94,169 @@
     </div>
 
     <div class="row">
-      <button class="btn copy small" onclick="downloadQR()">
-        📥 Tải QR
-      </button>
-
-      <button class="btn copy small" onclick="printPage()">
-        🖨 In trang
-      </button>
-
-      <button class="btn copy" onclick="copyText('#accNumber')">
-        📋 Sao chép số tài khoản
-      </button>
-
-      <button class="btn guide" onclick="copyInstruction()">
-        ✉️ Sao chép hướng dẫn nội dung
-      </button>
+      <button class="btn-download" onclick="downloadQR()">📥 Tải QR</button>
+      <button class="btn-print" onclick="window.print()">🖨 In trang</button>
+      <button class="btn-copy" onclick="copyText('#accNumber')">📋 Sao chép số tài khoản</button>
+      <button class="btn-copy" onclick="copyInstruction()">✉️ Sao chép hướng dẫn nội dung</button>
     </div>
 
-    <div class="row" style="margin-top:10px;">
-      <!-- Confirm button always visible -->
-      <button id="confirmBtn" class="btn confirm" onclick="handleConfirm()">
-        ✅ Xác nhận đã chuyển
-      </button>
+    <div class="row" style="margin-top:12px">
+      <button id="confirmBtn" class="btn-confirm" onclick="handleConfirm()">✅ Xác nhận đã chuyển</button>
     </div>
 
-    <p class="note">
-      Với <strong>nội dung chuyển</strong> là <em>số điện thoại của bạn</em>, chúng tôi sẽ liên hệ cho bạn.
-    </p>
-
-    <div class="footer">Kiểm tra kỹ tên & số tài khoản trước khi chuyển. Chúng tôi không chịu trách nhiệm nếu chuyển nhầm.</div>
+    <p class="note">Với <strong>nội dung chuyển</strong> là <em>số điện thoại của bạn</em>, hệ thống sẽ gửi tin nhắn xác nhận đến số của bạn.</p>
+    <div class="footer">Kiểm tra kỹ tên & số tài khoản trước khi chuyển. Công ty bạn chịu trách nhiệm với giao dịch thực tế.</div>
   </div>
 
-  <!-- modal lỗi (bấm trước 10s) -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-    <h3 id="modalTitle">⏳ Chưa thể xác nhận</h3>
-    <p id="modalMsg">Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi ít giây rồi thử lại.</p>
+  <!-- modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">⏳ Chưa thể xác nhận</h3>
+      <p id="modalMsg">Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi vài giây rồi thử lại.</p>
+    </div>
   </div>
 
-  <!-- Thank you overlay (single-file approach) -->
-  <div class="thanks" id="thanksScreen" style="display:none;">
-    <div class="thanks-card" role="status" aria-live="polite">
-      <h2>💖 Cảm ơn bạn! 💖</h2>
+  <!-- thanks -->
+  <div class="thanks-wrap" id="thanksScreen" aria-hidden="true">
+    <div class="thanks-card">
+      <h2>💖 Cảm ơn bạn!</h2>
       <p>Hệ thống đang kiểm tra thanh toán của bạn…</p>
-<!-- === Replace this GIF with your desired anime GIF (e.g. boa hancock chibi gif) === -->
-      <img id="animeGif" class="anime-gif" src="anime-cute.gif" alt="Anime cute" />
-
-      <p style="margin-top:12px;color:#555">Chúng tôi sẽ liên hệ với bạn sớm. Vui lòng đợi trong giây lát.</p>
+      <!-- Replace 'anime.gif' with your chosen GIF (boa hancock chibi). If missing, hidden -->
+      <img id="animeGif" class="anime-gif" src="anime.gif" alt="Anime cute" onerror="this.style.display='none'">
+      <p style="margin-top:12px;color:#555">Hệ thống sẽ gửi tin nhắn vào số điện thoại của bạn khi kiểm tra xong.</p>
     </div>
   </div>
 
-  <!-- floating layer for hearts/confetti -->
-  <div class="floating-layer" id="floating"></div>
+  <div class="floating" id="floating"></div>
 
-  <script>
-    /* =========================
-       CONFIG (Bạn có thể chỉnh ở đây)
-       ========================= */
-    const ALLOW_AFTER_MS = 10000; // 10s trước khi cho xác nhận hợp lệ
-    const ACCOUNT_NAME = "TRAN DINH HIEP";
-    const ACCOUNT_NUMBER = "51015202530369";
-    const BANK_NAME = "VPBank";
+<script>
+  // ====== CONFIG ======
+  const ALLOW_AFTER_MS = 10000; // 10 seconds
+  const ACCOUNT_NAME = "TRAN DINH HIEP";
+  const ACCOUNT_NUMBER = "51015202530369";
+  const BANK_NAME = "VPBank";
+  const QR_FILENAME = "qr.png";      // put your QR image in same folder (or change)
+  const ANIME_FILENAME = "anime.gif"; // put your anime gif in same folder (or change)
 
-    // Nếu bạn muốn mình chèn đường dẫn ảnh trực tiếp, đổi qrImagePath / animeGifPath
-    // Mặc định: đặt file qr.png và anime-cute.gif vào cùng folder với file html này
-    const qrImagePath = "qr.png";        // <-- đổi thành file QR bạn muốn
-    const animeGifPath = "anime-cute.gif"; // <-- đổi thành GIF anime bạn muốn
+  // ====== INIT UI ======
+  document.getElementById('accName').textContent = ACCOUNT_NAME;
+  document.getElementById('accNumber').textContent = ACCOUNT_NUMBER;
+  document.getElementById('bankName').textContent = BANK_NAME;
+  document.getElementById('qrImg').src = QR_FILENAME;
+  document.getElementById('animeGif').src = ANIME_FILENAME;
 
-    /* =========================
-       Init UI
-       ========================= */
-    document.getElementById("accName").innerText = ACCOUNT_NAME;
-    document.getElementById("accNumber").innerText = ACCOUNT_NUMBER;
-    document.getElementById("bankName").innerText = BANK_NAME;
-    document.getElementById("qrImg").src = qrImagePath;
-    document.getElementById("animeGif").src = animeGifPath;
+  // ====== QR placeholder if missing ======
+  function qrPlaceholder(){
+    const wrap = document.querySelector('.qr-wrap');
+    wrap.innerHTML = 
+      <svg width="180" height="180" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR placeholder">
+        <rect width="200" height="200" rx="12" fill="#fff"/>
+        <g fill="#f2f4f7">
+          <rect x="12" y="12" width="56" height="56" rx="8"/>
+          <rect x="132" y="12" width="56" height="56" rx="8"/>
+          <rect x="12" y="132" width="56" height="56" rx="8"/>
+        </g>
+        <text x="100" y="110" font-size="12" text-anchor="middle" fill="#9aa0a6">(Thay bằng file 'qr.png')</text>
+      </svg>
+    ;
+  }
+// ====== Clipboard helpers ======
+  function copyText(selector){
+    let text;
+    if(selector.startsWith('#') || selector.startsWith('.')){
+      const el = document.querySelector(selector); text = el ? el.textContent.trim() : selector;
+    } else text = selector;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=> showToast("Đã sao chép: " + text));
+    } else { fallbackCopy(text); }
+  }
+  function copyInstruction(){
+    const text = "Nội dung chuyển: SỐ ĐIỆN THOẠI CỦA BẠN";
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=> showToast("Đã sao chép hướng dẫn nội dung"));
+    } else { fallbackCopy(text); }
+  }
+  function fallbackCopy(text){
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); showToast('Đã sao chép'); } catch(e){ alert('Không thể sao chép tự động. Sao chép thủ công: ' + text); }
+    ta.remove();
+  }
 
-    /* =========================
-       Clipboard functions
-       ========================= */
-    function copyText(selector){
-      try {
-        const el = (selector.startsWith('#') || selector.startsWith('.')) ? document.querySelector(selector) : document.getElementById(selector);
-        const text = el ? el.innerText.trim() : selector;
-        navigator.clipboard.writeText(text).then(() => {
-          toast("Đã sao chép: " + text);
-        }).catch(()=>{ fallbackCopy(text); });
-      } catch(e){ fallbackCopy(selector); }
+  // ====== download QR ======
+  function downloadQR(){
+    const url = document.getElementById('qrImg').src;
+    if(!url){ showToast("Không có ảnh QR để tải"); return; }
+    const a = document.createElement('a'); a.href = url; a.download = 'qr.png'; document.body.appendChild(a); a.click(); a.remove();
+    showToast("Bắt đầu tải ảnh QR (nếu trình duyệt cho phép).");
+  }
+
+  // ====== toast ======
+  let toastTimer=null;
+  function showToast(msg){
+    let t = document.getElementById('_toast_');
+    if(!t){ t = document.createElement('div'); t.id = '_toast_'; t.style.position='fixed'; t.style.left='50%'; t.style.bottom='22px';
+      t.style.transform='translateX(-50%)'; t.style.padding='10px 14px'; t.style.background='rgba(0,0,0,0.75)'; t.style.color='#fff';
+      t.style.borderRadius='8px'; t.style.fontSize='13px'; t.style.zIndex='10000'; document.body.appendChild(t);
     }
-    function copyInstruction(){
-      const text = "Nội dung chuyển: SỐ ĐIỆN THOẠI CỦA BẠN";
-      navigator.clipboard.writeText(text).then(()=>{ toast("Đã sao chép hướng dẫn nội dung"); })
-        .catch(()=>{ fallbackCopy(text); });
-    }
-    function fallbackCopy(text){
-      const ta = document.createElement("textarea");
-      ta.value = text; document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); toast("Đã sao chép"); } catch(e){ alert("Không thể sao chép tự động — hãy bôi đen và sao chép: " + text); }
-      ta.remove();
-    }
+    t.textContent = msg; t.style.opacity = '1';
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+  }
 
-    /* =========================
-       Download / Print helpers
-       ========================= */
-    function downloadQR(){
-      const img = document.getElementById("qrImg");
-      const url = img.src;
-      // tạo link download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "qr.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      toast("Bắt đầu tải ảnh QR (nếu trình duyệt cho phép).");
+  // ====== confirm logic ======
+  let openedAt = Date.now();
+  let allowed = false;
+  setTimeout(()=>{ allowed = true; showToast("Bạn đã có thể xác nhận."); }, ALLOW_AFTER_MS);
+
+  function showModal(title,msg){
+    const backdrop = document.getElementById('modalBackdrop');
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    backdrop.style.display = 'flex'; backdrop.setAttribute('aria-hidden','false');
+    setTimeout(()=>{ backdrop.style.display = 'none'; backdrop.setAttribute('aria-hidden','true'); }, 2200);
+  }
+
+  function handleConfirm(){
+    if(!allowed){
+      const elapsed = Date.now() - openedAt; const wait = Math.ceil((ALLOW_AFTER_MS - elapsed)/1000);
+      showModal('⏳ Chưa thể xác nhận', 'Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi ' + wait + ' giây.');
+      if(navigator.vibrate) navigator.vibrate(80);
+      return;
     }
-    function printPage(){
-      window.print();
-    }
+    // success: show thanks overlay
+    showThanks();
+    // NOTE: here you should call your backend API to record the confirmation and trigger SMS
+    // e.g. fetch('/api/confirm', {method:'POST', body: JSON.stringify({account:ACCOUNT_NUMBER, phone:...})})
+  }
 
-    /* =========================
-       Confirm logic: allow only after ALLOW_AFTER_MS
-       ========================= */
-    let pageOpenedAt = Date.now();
-    let allowed = false;
-    setTimeout(()=>{ allowed = true; toast("Bạn đã có thể xác nhận."); }, ALLOW_AFTER_MS);
+  // ====== thanks + particles ======
+  function showThanks(){
+    document.querySelector('.card').style.filter='blur(5px)';
+    const el = document.getElementById('thanksScreen'); el.style.display='flex'; el.setAttribute('aria-hidden','false');
+    startParticles();
+  }
+  function startParticles(){
+    const layer = document.getElementById('floating');
+    const colors=['#ff8fb3','#ffd6ee','#ffd77f','#a6d8ff','#ffdbe6'];
+    let i=0; const max=40;
+    const id = setInterval(()=> {
+      if(i++ > max){ clearInterval(id); return; }
+const n = document.createElement('div');
+      const s = 10 + Math.random()*30; n.style.width = n.style.height = s+'px';
+      n.style.position='absolute'; n.style.left = Math.random()*100 + 'vw'; n.style.bottom='-30px';
+      n.style.borderRadius = '50%'; n.style.background = colors[Math.floor(Math.random()*colors.length)];
+      n.style.opacity = (0.6 + Math.random()*0.4).toString();
+      n.style.transition = 'transform 3500ms cubic-bezier(.2,.9,.3,1), opacity 3500ms linear';
+      layer.appendChild(n);
+      requestAnimationFrame(()=> { n.style.transform = 'translateY(-120vh) rotate(' + (Math.random()*360|0) + 'deg)'; n.style.opacity='0'; });
+      setTimeout(()=> n.remove(), 3800);
+    }, 140);
+  }
 
-    function handleConfirm(){
-      const elapsed = Date.now() - pageOpenedAt;
-      if(!allowed){
-        // show modal lỗi
-        showModal("⏳ Chưa thể xác nhận", "Xin lỗi — bạn chưa thể xác nhận lúc này. Vui lòng đợi " + Math.ceil((ALLOW_AFTER_MS - elapsed)/1000) + "s nữa.");
-        // animate modal (shake) for emphasis
-        shakeModal();
-        return;
-      }
-      // success: show thanks page with confetti/hearts
-      showThanks();
-    }
-/* =========================
-       Modal + toast small helper
-       ========================= */
-    const modal = document.getElementById("modal");
-    function showModal(title, msg){
-      modal.querySelector("h3").innerText = title;
-      modal.querySelector("p").innerText = msg;
-      modal.style.display = "block";
-      modal.setAttribute("aria-hidden","false");
-      setTimeout(()=>{ hideModal(); }, 2400);
-    }
-    function hideModal(){ modal.style.display = "none"; modal.setAttribute("aria-hidden","true"); }
+  // Enter key triggers confirm
+  document.addEventListener('keydown', function(e){ if(e.key==='Enter') handleConfirm(); });
 
-    function shakeModal(){
-      modal.style.transform = "translate(-50%,-50%) scale(1) rotate(-1deg)";
-      setTimeout(()=>{ modal.style.transform = "translate(-50%,-50%) scale(1) rotate(1deg)"; }, 80);
-      setTimeout(()=>{ modal.style.transform = "translate(-50%,-50%) scale(1) rotate(0deg)"; }, 160);
-    }
-
-    /* small toast (temporary message bottom) */
-    let toastTimer = null;
-    function toast(msg){
-      let el = document.getElementById("_toast_");
-      if(!el){
-        el = document.createElement("div"); el.id="_toast_";
-        el.style.position="fixed"; el.style.left="50%"; el.style.bottom="22px";
-        el.style.transform="translateX(-50%)"; el.style.padding="10px 14px";
-        el.style.background="rgba(0,0,0,0.7)"; el.style.color="#fff"; el.style.borderRadius="10px";
-        el.style.fontSize="13px"; el.style.zIndex=99999; document.body.appendChild(el);
-      }
-      el.innerText = msg;
-      el.style.opacity = "1";
-      if(toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ el.style.opacity="0"; }, 2200);
-    }
-
-    /* =========================
-       THANKS screen & floating effects
-       ========================= */
-    function showThanks(){
-      document.querySelector(".card").style.filter="blur(6px)"; // optional
-      const el = document.getElementById("thanksScreen");
-      el.style.display = "flex";
-
-      // start floating hearts/confetti
-      startFloating();
-    }
-
-    function startFloating(){
-      const layer = document.getElementById("floating");
-      // create particle every 220ms
-      const colors = ["#ff7ab6","#ffd1f0","#ffd36b","#a0d3ff"];
-      const total = 30;
-      let created = 0;
-      const interval = setInterval(()=>{
-        if(created++ > total){ clearInterval(interval); return; }
-        const node = document.createElement("div");
-        const size = 18 + Math.random()*30;
-        node.style.width = node.style.height = size + "px";
-        node.style.position = "absolute";
-        node.style.left = Math.random()*100 + "vw";
-        node.style.bottom = "-20px";
-        node.style.pointerEvents = "none";
-        node.style.opacity = Math.random() * 0.95 + 0.2;
-        node.style.transform = "translateY(0) rotate(0deg)";
-        node.style.borderRadius = "6px";
-        // use background circle/heart via inline SVG data or simple gradient box
-        node.style.background = radial-gradient(circle at 30% 30%, #fff, ${colors[Math.floor(Math.random()*colors.length)]});
-        // random animation (translate up)
-        const duration = 3000 + Math.random()*3000;
-        node.style.transition = transform ${duration}ms cubic-bezier(.2,.9,.3,1), opacity ${duration}ms linear;
-        layer.appendChild(node);
-        requestAnimationFrame(()=>{
-          node.style.transform = translateY(-120vh) rotate(${ (Math.random()*360).toFixed(0)}deg);
-          node.style.opacity = "0";
-        });
-        setTimeout(()=>{ node.remove(); }, duration + 200);
-      }, 180);
-    }
-
-    /* =========================
-       Accessibility: allow Enter on confirm
-       ========================= */
-    document.addEventListener("keydown", function(e){
-      if(e.key === "Enter"){
-        handleConfirm();
-      }
-    });
-
-    /* =========================
-       NOTES:
-       - Replace 'qr.png' with your QR image file (put in same folder)
-       - Replace 'anime-cute.gif' with the animation GIF you want
-       - If you want me to embed the exact QR you sent, reply 'CHÈN QR' và mình sẽ chèn sẵn
-       ========================= */
+  // End of script
 </script>
 </body>
 </html>
