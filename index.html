@@ -9,200 +9,60 @@
 html,body{height:100%}
 body{
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-  background: radial-gradient(circle at top,#0bb77a 0%, #0a6b9a 40%, #05284d 100%);
+  background:#04182b;
   color:#fff;
   overflow:auto;
-  -webkit-font-smoothing:antialiased;
 }
+
+.bg-anim{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:url('https://i.pinimg.com/originals/30/d2/70/30d270bf7c9dfda91c87f035e0312b84.gif') center/cover no-repeat;
+  filter:brightness(0.7);
+  animation: bgFloat 25s ease-in-out infinite alternate;
+}
+@keyframes bgFloat{0%{background-position:center top;}100%{background-position:center bottom;}}
 
 .wrap{
   position:relative;
   z-index:2;
-  max-width:520px;
-  margin:48px auto;
+  max-width:480px;
+  margin:50px auto;
   padding:22px;
   border-radius:14px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-  box-shadow: 0 20px 60px rgba(2,8,20,0.45);
-  backdrop-filter: blur(6px);
+  background:rgba(255,255,255,0.1);
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
   text-align:center;
+  backdrop-filter:blur(8px);
 }
-
-/* Nền tĩnh (giữ nhẹ) */
-.bg-3d{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  background: radial-gradient(circle at center,rgba(10,40,60,0.4),rgba(5,15,25,0.8));
-  filter:brightness(0.8);
-}
-
-/* floating boa image */
-.boa-anim{
-  position:fixed;
-  right:12px;
-  bottom:12px;
-  width:120px;
-  height:120px;
-  border-radius:12px;
-  object-fit:cover;
-  z-index:1;
-  pointer-events:none;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
-  transform-origin:center;
-  animation:boaFloat 6s ease-in-out infinite;
-  opacity:0.98;
-}
-@keyframes boaFloat{
-  0%{ transform: translateY(0) rotate(-2deg) }
-  50%{ transform: translateY(-12px) rotate(2deg) }
-  100%{ transform: translateY(0) rotate(-2deg) }
-}
-
-.card{background:#fff;border-radius:12px;padding:18px;text-align:center;color:#042b2b}
-.card h1{font-size:18px;margin-bottom:6px}
-.acc-name{font-weight:800;font-size:22px;margin:6px 0}
-.acc-num{font-weight:700;margin-bottom:12px}
-
-.qr-wrap{padding:12px;margin:8px auto 0;display:flex;justify-content:center}
-.qr{width:260px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(3,20,30,0.12)}
-.qr img{max-width:100%;max-height:100%;display:block;border-radius:6px}
-
-.note{margin-top:14px;font-size:15px;color:#052c2c;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96));}
-
-.controls{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center}
-.btn{flex:1 1 45%;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
-.btn.secondary{background:transparent;border:2px dashed rgba(3,30,30,0.1);color:#042b2b}
-.btn.primary{background:linear-gradient(90deg,#17c2a8,#0ea6ff);color:white;box-shadow:0 10px 30px rgba(14,166,255,0.18);cursor:not-allowed}
-.btn.report{background:linear-gradient(90deg,#ff5a5a,#d40f0f);color:#fff;font-weight:700}
-
-.toast{position:fixed;left:50%;transform:translateX(-50%);top:12%;background:#fff0f0;color:#902020;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.2);display:none;z-index:60}
-.full{position:fixed;inset:0;background:rgba(0,10,20,0.92);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:70;opacity:0;pointer-events:none;transition:opacity .45s}
+.card{background:#fff;border-radius:12px;padding:18px;text-align:center;color:#052b2b}
+.acc-name{font-weight:800;font-size:22px;margin:8px 0}
+.acc-num{font-weight:700;margin-bottom:10px}
+.qr{width:240px;height:240px;margin:10px auto;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(3,20,30,0.2)}
+.qr img{max-width:95%;max-height:95%;border-radius:8px}
+.note{margin-top:12px;font-size:15px;color:#042b2b;padding:10px;border-radius:8px;background:rgba(255,255,255,0.9)}
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.btn{padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+.btn.secondary{background:#fff;border:2px dashed #0b5;color:#0b5}
+.btn.primary{background:linear-gradient(90deg,#17c2a8,#0ea6ff);color:white;cursor:not-allowed}
+.btn.report{background:#ff4d4d;color:#fff;font-weight:700}
+.toast{position:fixed;top:10%;left:50%;transform:translateX(-50%);background:#fff0f0;color:#902020;padding:10px 14px;border-radius:10px;display:none;z-index:50}
+.full{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:70;opacity:0;pointer-events:none;transition:opacity .4s}
 .full.show{opacity:1;pointer-events:auto}
-.full .box{width:320px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));padding:18px;border-radius:14px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
-
-@media (max-width:480px){
-  .wrap{margin:16px;padding:14px}
-  .qr{width:190px;height:190px}
-  .boa-anim{width:90px;height:90px;right:8px;bottom:8px}
-}
+.full .box{background:rgba(255,255,255,0.05);padding:18px 24px;border-radius:14px;text-align:center;box-shadow:0 0 30px rgba(255,255,255,0.2)}
 </style>
 </head>
 <body>
 
-<div class="bg-3d"></div>
+<div class="bg-anim"></div>
 
-<div class="wrap" role="main" aria-labelledby="t">
-  <div class="card" id="t">
-    <h1>Quét mã để chuyển tiền đến</h1>
+<div class="wrap">
+  <div class="card">
+    <h2>Quét mã để chuyển tiền đến</h2>
     <div class="acc-name">TRAN DINH HIEP</div>
     <div class="acc-num">51015202530369</div>
 
-    <div class="qr-wrap">
-      <div class="qr">
-        <!-- 1) QR được tạo trực tiếp từ API bằng STK để chắc chắn hiển thị -->
-        <img id="qrImg"
-             src="https://api.qrserver.com/v1/create-qr-code/?data=STK:51015202530369&size=260x260"
-             alt="QR VPBank">
-      </div>
-    </div>
-
-    <div class="note">
-      Nội dung thanh toán: <strong>số điện thoại của bạn</strong>
-    </div>
-
-    <div class="controls">
-      <button class="btn secondary" id="copyBtn">Sao chép STK</button>
-      <button class="btn primary" id="confirmBtn" aria-disabled="true">Tôi đã chuyển tiền</button>
-      <button class="btn report" id="reportBtn">Báo cáo sự cố</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast">Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!</div>
-
-<div class="full" id="full">
-  <div class="box">
-    <h2>Hệ thống đang xác nhận giao dịch...</h2>
-    <p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p>
-    <div style="margin-top:14px;">
-      <button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#03c6a0;color:#022; font-weight:800;">Quay lại</button>
-    </div>
-  </div>
-</div>
-
-<!-- popup báo lỗi -->
-<div class="full" id="errorPopup">
-  <div class="box">
-    <h2>📞 Báo cáo sự cố</h2>
-    <p>Hãy liên hệ với <strong>0355567466</strong> để được hỗ trợ nhanh nhất.</p>
-    <div style="margin-top:14px;">
-      <button onclick="closeError()" style="padding:10px 14px;border-radius:10px;border:0;background:#f44;color:#fff;font-weight:800;">Đóng</button>
-    </div>
-  </div>
-</div>
-
-<!-- HÌNH ANIME BOA HANCOCK (floating) -->
-<!-- mình dùng ảnh nhẹ làm float; nếu bạn muốn thay link ảnh khác thì đổi src -->
-<img class="boa-anim" src="https://i.ibb.co/ZgQtPtk/boa.png" alt="Boa Hancock">
-
-<script>
-const WAIT_SECONDS = 20;
-const stk = '51015202530369';
-const confirmBtn = document.getElementById('confirmBtn');
-const toast = document.getElementById('toast');
-const full = document.getElementById('full');
-const copyBtn = document.getElementById('copyBtn');
-const reportBtn = document.getElementById('reportBtn');
-const errorPopup = document.getElementById('errorPopup');
-
-let remaining = WAIT_SECONDS;
-confirmBtn.disabled = true;
-confirmBtn.setAttribute('aria-disabled','true');
-
-const t = setInterval(()=>{
-  remaining--;
-  if (remaining <= 0) {
-    clearInterval(t);
-    confirmBtn.disabled = false;
-    confirmBtn.classList.remove('primary');
-    confirmBtn.style.cursor = 'pointer';
-    confirmBtn.style.background = 'linear-gradient(90deg,#12d6a1,#00a6ff)';
-    confirmBtn.setAttribute('aria-disabled','false');
-  }
-},1000);
-
-confirmBtn.addEventListener('click', ()=>{
-  if (confirmBtn.getAttribute('aria-disabled') === 'true') {
-    toast.style.display = 'block';
-    setTimeout(()=>toast.style.display='none',1900);
-    return;
-  }
-  full.classList.add('show');
-  setTimeout(()=>{
-    const box = full.querySelector('.box');
-    box.innerHTML = '<h2>✅ Giao dịch đã được xác nhận</h2><p>Cảm ơn bạn — chúng tôi sẽ liên hệ sớm.</p>' +
-                    '<div style="margin-top:14px"><a href="./" style="padding:10px 14px;border-radius:10px;background:#06b39a;color:#001;font-weight:800;text-decoration:none;">Quay về</a></div>';
-  },3000);
-});
-
-copyBtn.addEventListener('click', ()=>{
-  navigator.clipboard.writeText(stk).then(()=>{
-    toast.textContent = 'Đã sao chép số tài khoản.';
-    toast.style.background = '#effff6';
-    toast.style.color = '#084d36';
-    toast.style.display = 'block';
-    setTimeout(()=>{ 
-      toast.style.display='none'; 
-      toast.textContent='Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!'; 
-      toast.style.background=''; toast.style.color=''; 
-    },1800);
-  });
-});
-
-reportBtn.addEventListener('click', ()=> errorPopup.classList.add('show'));
-function closeFull(){ full.classList.remove('show'); }
-function closeError(){ errorPopup.classList.remove('show'); }
-</script>
-</body>
-</html>
+    <div class="qr">
+      <!-- Ảnh QR nhúng sẵn -->
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAKACAYAAAAC8/XHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAR1SURBVHic7d1tcoMwDAXQXf//yZp2U9xjGo1mZybOE1nxLweDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAK3vZPzv6z0vslv3V3pfb8P2z6/a9O/mXtb7Vb9/fo3fZ9vw+Fj/Psf59P7zv9c/e6b2nb+6tf5fU9f8wMP83TeR9CezfZ1Lr/m0vj4ft+t0aY+/2Hf3pXX7zV92uv9uXl/t9s++y03+W4f2/XfbxYj7PQfN9/2+t+b/fu8XP39Pvf3vn+36/7S2+n2XxYj+fE/3fP+/V/Xfd8Pw+f94n+3s+/7/X9X3fD8Ph/fgf7uX/f6/6b7vh+Hw/vwP9/V/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP7uX/f6/6b7vh+Hw/rwD93b/v9f1X3fD8Ph/XgP
