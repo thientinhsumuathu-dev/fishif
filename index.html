@@ -1,170 +1,184 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cổng thanh toán - TRAN DINH HIEP</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-      background: linear-gradient(180deg,#0bb77a 0%, #0a6b9a 60%, #073a6a 100%);
-      color:#fff;
-      overflow:auto;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cổng thanh toán - TRAN DINH HIEP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  background: radial-gradient(circle at top,#0bb77a 0%, #0a6b9a 40%, #05284d 100%);
+  color:#fff;
+  overflow:auto;
+  -webkit-font-smoothing:antialiased;
+}
 
-    .wrap{
-      position:relative;
-      z-index:2;
-      max-width:520px;
-      margin:48px auto;
-      padding:22px;
-      border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-      box-shadow: 0 20px 60px rgba(2,8,20,0.45);
-      backdrop-filter: blur(6px);
-    }
+.wrap{
+  position:relative;
+  z-index:2;
+  max-width:520px;
+  margin:48px auto;
+  padding:22px;
+  border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  box-shadow: 0 20px 60px rgba(2,8,20,0.45);
+  backdrop-filter: blur(6px);
+  text-align:center;
+}
 
-    /* ảnh anime dễ thương */
-    .decor{position:absolute;inset:0;pointer-events:none;z-index:1}
-    .anime{position:absolute;width:100px;height:100px;background-size:cover;border-radius:50%;filter:drop-shadow(0 10px 20px rgba(0,0,0,0.35));opacity:0.95}
-    .a1{left:-10%;top:10%;animation:float1 8s ease-in-out infinite;background-image:url('https://i.ibb.co/vJx8d2b/nami.png');}
-    .a2{right:-8%;top:6%;animation:float2 9s ease-in-out .5s infinite;background-image:url('https://i.ibb.co/g6RgTQk/robin.png');}
-    .a3{left:4%;bottom:-8%;animation:float3 10s ease-in-out 1s infinite;background-image:url('https://i.ibb.co/ZgQtPtk/boa.png');}
-    .a4{right:10%;bottom:6%;animation:float1 9s ease-in-out 1.4s infinite;background-image:url('https://i.ibb.co/mSxxt4h/vivi.png');}
-    @keyframes float1{0%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}100%{transform:translateY(0) rotate(-3deg)}}
-    @keyframes float2{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(6deg)}100%{transform:translateY(0) rotate(0deg)}}
-    @keyframes float3{0%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-14px) rotate(-4deg)}100%{transform:translateY(0) rotate(2deg)}}
+/* Nền 3D nhân vật One Piece */
+.bg-3d{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background: radial-gradient(circle at center,rgba(10,40,60,0.4),rgba(5,15,25,0.8)), 
+              url('https://i.ibb.co/mSJbDrM/boa-hancock-3d.jpg') center/cover no-repeat;
+  animation: bgMove 20s ease-in-out infinite alternate;
+  filter:brightness(0.8);
+}
+@keyframes bgMove{
+  0%{background-position:center top;}
+  100%{background-position:center bottom;}
+}
 
-    .card{background:#fff;border-radius:12px;padding:18px;text-align:center;color:#042b2b}
-    .card h1{font-size:18px;margin-bottom:6px}
-    .acc-name{font-weight:800;font-size:22px;margin:6px 0}
-    .acc-num{font-weight:700;margin-bottom:12px}
+.card{background:#fff;border-radius:12px;padding:18px;text-align:center;color:#042b2b}
+.card h1{font-size:18px;margin-bottom:6px}
+.acc-name{font-weight:800;font-size:22px;margin:6px 0}
+.acc-num{font-weight:700;margin-bottom:12px}
 
-    .qr-wrap{padding:12px;margin:8px auto 0;display:flex;justify-content:center}
-    .qr{width:260px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(3,20,30,0.12)}
-    .qr img{max-width:90%;max-height:90%;display:block;border-radius:6px}
+.qr-wrap{padding:12px;margin:8px auto 0;display:flex;justify-content:center}
+.qr{width:260px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(3,20,30,0.12)}
+.qr img{max-width:90%;max-height:90%;display:block;border-radius:6px}
 
-    .brand-logos{display:flex;justify-content:center;gap:12px;margin-top:12px;opacity:0.95}
-    .note{margin-top:14px;font-size:15px;color:#052c2c;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96));}
-    .phone-line{background:linear-gradient(90deg,#f8fdfd,#ffffff);padding:10px;border-radius:10px;margin-top:10px;color:#032b2b;font-weight:700}
+.note{margin-top:14px;font-size:15px;color:#052c2c;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.96));}
 
-    .controls{display:flex;gap:12px;margin-top:16px}
-    .btn{flex:1;padding:12px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
-    .btn.secondary{background:transparent;border:2px dashed rgba(3,30,30,0.06);color:#042b2b}
-    .btn.primary{background:linear-gradient(90deg,#17c2a8,#0ea6ff);color:white;box-shadow:0 10px 30px rgba(14,166,255,0.18);cursor:not-allowed}
+.controls{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.btn{flex:1 1 45%;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+.btn.secondary{background:transparent;border:2px dashed rgba(3,30,30,0.1);color:#042b2b}
+.btn.primary{background:linear-gradient(90deg,#17c2a8,#0ea6ff);color:white;box-shadow:0 10px 30px rgba(14,166,255,0.18);cursor:not-allowed}
+.btn.report{background:linear-gradient(90deg,#ff5a5a,#d40f0f);color:#fff;font-weight:700}
 
-    .toast{position:fixed;left:50%;transform:translateX(-50%);top:12%;background:#fff0f0;color:#902020;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.2);display:none;z-index:60}
-    .full{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,6,10,0.9), rgba(2,8,20,0.95));display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:70;opacity:0;pointer-events:none;transition:opacity .45s}
-    .full.show{opacity:1;pointer-events:auto}
-    .full .box{width:320px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:18px;border-radius:14px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:12%;background:#fff0f0;color:#902020;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.2);display:none;z-index:60}
+.full{position:fixed;inset:0;background:rgba(0,10,20,0.92);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:70;opacity:0;pointer-events:none;transition:opacity .45s}
+.full.show{opacity:1;pointer-events:auto}
+.full .box{width:320px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));padding:18px;border-radius:14px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
 
-    @media (max-width:480px){
-      .wrap{margin:16px;padding:14px}
-      .qr{width:190px;height:190px}
-      .anime{display:none}
-    }
-  </style>
+@media (max-width:480px){
+  .wrap{margin:16px;padding:14px}
+  .qr{width:190px;height:190px}
+}
+</style>
 </head>
 <body>
-  <div class="decor" aria-hidden="true">
-    <div class="anime a1"></div>
-    <div class="anime a2"></div>
-    <div class="anime a3"></div>
-    <div class="anime a4"></div>
-  </div>
 
-  <div class="wrap" role="main" aria-labelledby="t">
-    <div class="card" id="t">
-      <h1>Quét mã để chuyển tiền đến</h1>
-      <div class="acc-name">TRAN DINH HIEP</div>
-      <div class="acc-num">51015202530369</div>
+<div class="bg-3d"></div>
 
-      <div class="qr-wrap">
-        <div class="qr">
-          <img id="qrImg" src="https://files.oaiusercontent.com/file-0000000047ec620ab2a99d0572fdd8ff" alt="QR VPBank">
-        </div>
-      </div>
+<div class="wrap" role="main" aria-labelledby="t">
+  <div class="card" id="t">
+    <h1>Quét mã để chuyển tiền đến</h1>
+    <div class="acc-name">TRAN DINH HIEP</div>
+    <div class="acc-num">51015202530369</div>
 
-      <div class="note">
-        Nếu gặp vấn đề hãy liên hệ <strong>0355567466</strong> — Nội dung thanh toán là <strong>số điện thoại của bạn</strong>.
-      </div>
-
-      <div class="phone-line">SĐT liên hệ: <span id="phoneText">0355567466</span></div>
-
-      <div class="controls">
-        <button class="btn secondary" id="copyBtn">Sao chép SĐT</button>
-        <button class="btn primary" id="confirmBtn" aria-disabled="true">Tôi đã chuyển tiền</button>
+    <div class="qr-wrap">
+      <div class="qr">
+        <img id="qrImg" src="c2d4bfaf-02a6-43dd-b7e5-d7a82f20e53f.png" alt="QR VPBank">
       </div>
     </div>
-  </div>
 
-  <div class="toast" id="toast">Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!</div>
+    <div class="note">
+      Nội dung thanh toán: <strong>số điện thoại của bạn</strong>
+    </div>
 
-  <div class="full" id="full">
-    <div class="box">
-      <h2>Hệ thống đang xác nhận giao dịch...</h2>
-      <p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p>
-      <div style="margin-top:14px;">
-        <button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#03c6a0;color:#022; font-weight:800;">Quay lại</button>
-      </div>
+    <div class="controls">
+      <button class="btn secondary" id="copyBtn">Sao chép STK</button>
+      <button class="btn primary" id="confirmBtn" aria-disabled="true">Tôi đã chuyển tiền</button>
+      <button class="btn report" id="reportBtn">Báo cáo sự cố</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const WAIT_SECONDS = 20;
-    const contactPhone = '0355567466';
-    const confirmBtn = document.getElementById('confirmBtn');
-    const toast = document.getElementById('toast');
-    const full = document.getElementById('full');
-    const copyBtn = document.getElementById('copyBtn');
-    const phoneText = document.getElementById('phoneText');
+<div class="toast" id="toast">Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!</div>
 
-    phoneText.textContent = contactPhone;
-    let remaining = WAIT_SECONDS;
-    confirmBtn.disabled = true;
-    confirmBtn.setAttribute('aria-disabled','true');
+<div class="full" id="full">
+  <div class="box">
+    <h2>Hệ thống đang xác nhận giao dịch...</h2>
+    <p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p>
+    <div style="margin-top:14px;">
+      <button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#03c6a0;color:#022; font-weight:800;">Quay lại</button>
+    </div>
+  </div>
+</div>
 
-    const t = setInterval(()=>{
-      remaining--;
-      if (remaining <= 0) {
-        clearInterval(t);
-        confirmBtn.disabled = false;
-        confirmBtn.classList.remove('primary');
-        confirmBtn.style.cursor = 'pointer';
-        confirmBtn.style.background = 'linear-gradient(90deg,#12d6a1,#00a6ff)';
-        confirmBtn.setAttribute('aria-disabled','false');
-      }
-    },1000);
+<!-- Popup báo cáo sự cố -->
+<div class="full" id="errorPopup">
+  <div class="box">
+    <h2>📞 Báo cáo sự cố</h2>
+    <p>Hãy liên hệ với <strong>0355567466</strong> để được hỗ trợ nhanh nhất.</p>
+    <div style="margin-top:14px;">
+      <button onclick="closeError()" style="padding:10px 14px;border-radius:10px;border:0;background:#f44;color:#fff;font-weight:800;">Đóng</button>
+    </div>
+  </div>
+</div>
 
-    confirmBtn.addEventListener('click', ()=>{
-      if (confirmBtn.getAttribute('aria-disabled') === 'true') {
-        toast.style.display = 'block';
-        setTimeout(()=>toast.style.display='none',1900);
-        return;
-      }
-      full.classList.add('show');
-      setTimeout(()=>{
-        const box = full.querySelector('.box');
-        box.innerHTML = '<h2>✅ Giao dịch đã được xác nhận</h2><p>Cảm ơn bạn — chúng tôi sẽ liên hệ sớm.</p>' +
-                        '<div style="margin-top:14px"><a href="./" style="padding:10px 14px;border-radius:10px;background:#06b39a;color:#001;font-weight:800;text-decoration:none;">Quay về</a></div>';
-      },3000);
-    });
+<script>
+const WAIT_SECONDS = 20;
+const stk = '51015202530369';
+const confirmBtn = document.getElementById('confirmBtn');
+const toast = document.getElementById('toast');
+const full = document.getElementById('full');
+const copyBtn = document.getElementById('copyBtn');
+const reportBtn = document.getElementById('reportBtn');
+const errorPopup = document.getElementById('errorPopup');
 
-    copyBtn.addEventListener('click', ()=>{
-      navigator.clipboard.writeText(contactPhone).then(()=>{
-        toast.textContent = 'Đã sao chép SĐT vào clipboard.';
-        toast.style.background = '#effff6';
-        toast.style.color = '#084d36';
-        toast.style.display = 'block';
-        setTimeout(()=>{ toast.style.display='none'; toast.textContent='Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!'; toast.style.background=''; toast.style.color=''; },1800);
-      });
-    });
+let remaining = WAIT_SECONDS;
+confirmBtn.disabled = true;
+confirmBtn.setAttribute('aria-disabled','true');
 
-    function closeFull(){ full.classList.remove('show'); }
-  </script>
+const t = setInterval(()=>{
+  remaining--;
+  if (remaining <= 0) {
+    clearInterval(t);
+    confirmBtn.disabled = false;
+    confirmBtn.classList.remove('primary');
+    confirmBtn.style.cursor = 'pointer';
+    confirmBtn.style.background = 'linear-gradient(90deg,#12d6a1,#00a6ff)';
+    confirmBtn.setAttribute('aria-disabled','false');
+  }
+},1000);
+
+confirmBtn.addEventListener('click', ()=>{
+  if (confirmBtn.getAttribute('aria-disabled') === 'true') {
+    toast.style.display = 'block';
+    setTimeout(()=>toast.style.display='none',1900);
+    return;
+  }
+  full.classList.add('show');
+  setTimeout(()=>{
+    const box = full.querySelector('.box');
+    box.innerHTML = '<h2>✅ Giao dịch đã được xác nhận</h2><p>Cảm ơn bạn — chúng tôi sẽ liên hệ sớm.</p>' +
+                    '<div style="margin-top:14px"><a href="./" style="padding:10px 14px;border-radius:10px;background:#06b39a;color:#001;font-weight:800;text-decoration:none;">Quay về</a></div>';
+  },3000);
+});
+
+copyBtn.addEventListener('click', ()=>{
+  navigator.clipboard.writeText(stk).then(()=>{
+    toast.textContent = 'Đã sao chép số tài khoản.';
+    toast.style.background = '#effff6';
+    toast.style.color = '#084d36';
+    toast.style.display = 'block';
+    setTimeout(()=>{ 
+      toast.style.display='none'; 
+      toast.textContent='Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!'; 
+      toast.style.background=''; toast.style.color=''; 
+    },1800);
+  });
+});
+
+reportBtn.addEventListener('click', ()=> errorPopup.classList.add('show'));
+function closeFull(){ full.classList.remove('show'); }
+function closeError(){ errorPopup.classList.remove('show'); }
+</script>
 </body>
 </html>
