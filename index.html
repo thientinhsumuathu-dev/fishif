@@ -1,19 +1,215 @@
-import React from 'react';
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuyển tiền tham gia</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    h1 {
+      color: #00796b;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+    p {
+      color: #555;
+      font-size: 14px;
+      margin-top: 0;
+    }
+    .qr-box {
+      margin: 15px auto;
+      width: 200px;
+      height: 200px;
+      padding: 10px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 200, 180, 0.6);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 200, 180, 0.6); }
+      50% { box-shadow: 0 0 35px rgba(0, 200, 180, 1); }
+    }
+    .info {
+      font-weight: bold;
+      color: #333;
+      font-size: 18px;
+    }
+    .account {
+      font-size: 20px;
+      color: #e91e63;
+      letter-spacing: 2px;
+      text-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
+    }
+    .bank {
+      color: #777;
+      margin-bottom: 15px;
+    }
+    button {
+      background-color: #009688;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #00796b;
+    }
+    #confirmBtn {
+      background-color: #ff4081;
+    }
+    .floating {
+      position: absolute;
+      animation: float 5s infinite;
+      opacity: 0.7;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(-30px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 0.7; }
+    }
+    footer {
+      font-size: 11px;
+      color: #888;
+      margin-top: 10px;
+    }
 
-// Single-file React component (TailwindCSS assumed available in the project) // Default export is a complete page you can drop into a React app.
+    /* Trang cảm ơn */
+    #thankPage {
+      display: none;
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .heart {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background-image: url('https://i.imgur.com/zc7eC4Q.png');
+      background-size: cover;
+      animation: fly 6s linear infinite;
+    }
+    @keyframes fly {
+      0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
 
-export default function PaymentQRCodePage() { const accountName = 'TRAN DINH HIEP'; const accountNumber = '51015202530369'; const bankName = 'VPBank'; const qrSrc = '/mnt/data/A_QR_code_payment_image_displays_Tran_Dinh_Hiep's_.png'; // update path if needed
+    30% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
 
-function copyAccount() { navigator.clipboard.writeText(accountNumber).then(() => { alert('Đã sao chép số tài khoản vào clipboard'); }); }
+  <div class="container" id="mainPage">
+    <img src="https://i.imgur.com/UMUoF3D.png" class="floating" style="top:20px; left:30px; width:30px;">
+    <img src="https://i.imgur.com/UMUoF3D.png" class="floating" style="bottom:30px; right:40px; width:25px;">
+    <img src="https://i.imgur.com/dmGc2o7.png" class="floating" style="top:80px; right:30px; width:35px;">
 
-function copyPhoneInstruction() { const text = 'Nội dung chuyển: SỐ ĐIỆN THOẠI CỦA BẠN'; navigator.clipboard.writeText(text).then(() => { alert('Đã sao chép hướng dẫn nội dung chuyển vào clipboard'); }); }
+    <h1>Để tham gia hãy chuyển tiền</h1>
+    <p>Dưới đây là mã QR và số tài khoản</p>
 
-return ( 
+    <div class="qr-box">
+      <img src="https://i.imgur.com/w1Xy9vB.png" width="100%" height="100%" alt="QR chuyển tiền">
+    </div>
 
-Để tham gia hãy chuyển tiền
+    <div class="info">TRAN DINH HIEP</div>
+    <div class="account" id="accNumber">51015202530369</div>
+    <div class="bank">VPBank</div>
 
-Dưới đây là mã QR và số tài khoản
+    <button onclick="copyText('accNumber')">📋 Sao chép số tài khoản</button>
+    <button onclick="copyInstruction()">📱 Sao chép hướng dẫn nội dung</button>
+    <button id="confirmBtn" onclick="confirmTransfer()">✅ Xác nhận đã chuyển</button>
 
-<main className="p-6 flex flex-col items-center gap-4"> <div className="w-44 h-44 bg-white rounded-lg p-2 shadow-inner flex items-center justify-center"> {/* QR image */} <img src={qrSrc} alt="QR để chuyển tiền" className="max-w-full max-h-full object-contain rounded" /> </div> <div className="text-center"> <div className="text-emerald-700 font-bold text-lg">{accountName}</div> <div className="text-gray-700 mt-1 text-xl tracking-widest">{accountNumber}</div> <div className="text-gray-500 mt-1 text-sm">{bankName}</div> </div> <div className="w-full flex gap-2 mt-2"> <button onClick={copyAccount} className="flex-1 px-4 py-2 rounded-lg border border-emerald-200 text-sm font-medium hover:bg-emerald-50" > Sao chép số tài khoản </button> <button onClick={copyPhoneInstruction} className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-95" > Sao chép hướng dẫn nội dung </button> </div> <p className="text-center text-gray-600 text-sm mt-1">Với <strong className="text-gray-800">nội dung chuyển</strong> là <em>số điện thoại của bạn</em>, chúng tôi sẽ liên hệ cho bạn.</p> <div className="w-full flex items-center justify-between mt-3"> <a href={qrSrc} download className="text-xs underline text-emerald-600">Tải ảnh QR</a> <a href="#" onClick={(e)=>{e.preventDefault(); window.print();}} className="text-xs text-gray-500 underline">In trang này</a> </div> </main> <footer className="bg-gray-50 px-6 py-3 text-center text-xs text-gray-500"> <div>Chú ý: Kiểm tra kỹ tên và số tài khoản trước khi chuyển tiền. Chúng tôi không chịu trách nhiệm nếu số tiền chuyển nhầm.</div> </footer> </div> </div> 
+    <p style="font-size:13px;margin-top:10px;">
+      Với <b>nội dung chuyển</b> là <i>số điện thoại của bạn</i>, chúng tôi sẽ liên hệ cho bạn.
+    </p>
 
-); }
+    <footer>
+      Kiểm tra kỹ tên và số tài khoản trước khi chuyển. Chúng tôi không chịu trách nhiệm nếu chuyển nhầm.
+    </footer>
+  </div>
+
+  <!-- Trang cảm ơn -->
+  <div class="container" id="thankPage">
+    <h1>🎀 Cảm ơn bạn 🎀</h1>
+    <p>Hệ thống đang kiểm tra thanh toán của bạn...</p>
+    <img src="https://i.pinimg.com/originals/a1/0e/1b/a10e1bc4f2aee91115b963760b7741da.gif" width="180" alt="anime cute">
+    <div class="hearts" id="hearts"></div>
+    <p style="margin-top:10px;">Vui lòng chờ trong giây lát 💖</p>
+  </div>
+
+  <script>
+    let canConfirm = false;
+
+    // Cho phép xác nhận sau 10 giây
+    setTimeout(() => { canConfirm = true; }, 10000);
+
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert("Đã sao chép số tài khoản: " + text);
+    }
+
+    function copyInstruction() {
+      const text = "Nội dung chuyển: SỐ ĐIỆN THOẠI CỦA BẠN";
+      navigator.clipboard.writeText(text);
+      alert("Đã sao chép hướng dẫn nội dung chuyển!");
+    }
+
+    function confirmTransfer() {
+      if (!canConfirm) {
+        alert("⏳ Xin lỗi, bạn chưa thể xác nhận lúc này! Vui lòng đợi vài giây rồi thử lại.");
+        return;
+      }
+      document.getElementById("mainPage").style.display = "none";
+      document.getElementById("thankPage").style.display = "block";
+      startHearts();
+    }
+
+    function startHearts() {
+      const hearts = document.getElementById("hearts");
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+        hearts.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 300);
+    }
+  </script>
+</body>
+</html>
