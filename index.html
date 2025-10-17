@@ -21,7 +21,6 @@
   .acc-num{font-weight:700;margin-bottom:12px}
   .qr-wrap{padding:12px;margin:8px auto 0;display:flex;justify-content:center}
   .qr{width:260px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(3,20,30,0.12)}
-  .qr img{max-width:92%;max-height:92%;display:block;border-radius:6px}
   .note{margin-top:14px;font-size:15px;color:#052c2c;padding:10px;border-radius:8px;background:linear-gradient(90deg,#fff,#fff);opacity:0.95}
   .controls{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center}
   .btn{flex:1 1 44%;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
@@ -44,18 +43,15 @@
 </style>
 </head>
 <body>
-<!-- canvas nền năng lượng + thiên thạch -->
 <canvas id="bgCanvas"></canvas>
-<!-- overlay nội dung -->
+
 <div class="wrap" role="main" aria-labelledby="t">
   <div class="card" id="t">
     <h1>Quét mã để chuyển tiền đến</h1>
     <div class="acc-name">TRAN DINH HIEP</div>
     <div class="acc-num">51015202530369</div>
     <div class="qr-wrap">
-      <div class="qr">
-        <img id="qrImg" src="https://i.ibb.co/CswBb6hK/qr-vpbank.png" alt="QR VPBank">
-      </div>
+      <div class="qr"></div>
     </div>
     <div class="note">
       Nội dung thanh toán: <strong>số điện thoại của bạn</strong>
@@ -67,21 +63,35 @@
     </div>
   </div>
 </div>
-<!-- toast + modals -->
+
 <div class="toast" id="toast">Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!</div>
+
 <div class="full" id="full">
-  <div class="box"><h2>Hệ thống đang xác nhận giao dịch...</h2><p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p><div style="margin-top:14px;"><button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#06b39a;color:#001;font-weight:800;">Quay lại</button></div></div>
+  <div class="box">
+    <h2>Hệ thống đang xác nhận giao dịch...</h2>
+    <p>Vui lòng chờ trong giây lát. Cảm ơn bạn đã thanh toán!</p>
+    <div style="margin-top:14px;">
+      <button onclick="closeFull()" style="padding:10px 14px;border-radius:10px;border:0;background:#06b39a;color:#001;font-weight:800;">Quay lại</button>
+    </div>
+  </div>
 </div>
+
 <div class="full" id="errorPopup">
-  <div class="box"><h2>📞 Báo cáo sự cố</h2><p>Hãy liên hệ với <strong>0355567466</strong> để được hỗ trợ nhanh nhất.</p><div style="margin-top:14px;"><button onclick="closeError()" style="padding:10px 14px;border-radius:10px;border:0;background:#f44;color:#fff;font-weight:800;">Đóng</button></div></div>
+  <div class="box">
+    <h2>📞 Báo cáo sự cố</h2>
+    <p>Hãy liên hệ với <strong>0355567466</strong> để được hỗ trợ nhanh nhất.</p>
+    <div style="margin-top:14px;">
+      <button onclick="closeError()" style="padding:10px 14px;border-radius:10px;border:0;background:#f44;color:#fff;font-weight:800;">Đóng</button>
+    </div>
+  </div>
 </div>
-<!-- Boa Hancock GIF -->
+
 <div class="boa-wrap" aria-hidden="true">
   <img class="boa-gif" src="https://i.ibb.co/3yqZ1Vf/boa-loop.gif" alt="Boa Hancock">
   <div class="light-sweep" aria-hidden="true"></div>
 </div>
 
-<!-- ========== Canvas nền thiên thạch lao vào + nổ sáng ========== -->
+<!-- ========== Canvas thiên thạch + nổ pháo hoa ========== -->
 <script>
 (function(){
   const canvas = document.getElementById('bgCanvas');
@@ -95,62 +105,60 @@
   const qrWrap = document.querySelector('.qr-wrap');
   const qrRect = ()=>qrWrap.getBoundingClientRect();
 
-  const METEOR_SPEED = 250;
-  const MAX_SPARKS = 250;
   let meteors=[], sparks=[], flashes=[];
-
+  const MAX_SPARKS=300;
+  
   function rand(a,b){return a+Math.random()*(b-a);}
   function spawnMeteor(){
     const qr = qrRect();
-    const size = rand(6,18);
-    const side = Math.floor(rand(0,4));
+    const size=rand(8,20);
+    const side=Math.floor(rand(0,4));
     let x,y,vx,vy;
     switch(side){
-      case 0: x=rand(qr.left-150,qr.right+150); y=-50; vx=0; vy=METEOR_SPEED/60; break;
-      case 1: x=rand(qr.left-150,qr.right+150); y=H+50; vx=0; vy=-METEOR_SPEED/60; break;
-      case 2: x=-50; y=rand(qr.top-150,qr.bottom+150); vx=METEOR_SPEED/60; vy=0; break;
-      case 3: x=W+50; y=rand(qr.top-150,qr.bottom+150); vx=-METEOR_SPEED/60; vy=0; break;
+      case 0: x=rand(qr.left-200,qr.right+200); y=-50; vx=rand(-30,30)/60; vy=rand(200,350)/60; break;
+      case 1: x=rand(qr.left-200,qr.right+200); y=H+50; vx=rand(-30,30)/60; vy=-rand(200,350)/60; break;
+      case 2: x=-50; y=rand(qr.top-200,qr.bottom+200); vx=rand(200,350)/60; vy=rand(-30,30)/60; break;
+      case 3: x=W+50; y=rand(qr.top-200,qr.bottom+200); vx=-rand(200,350)/60; vy=rand(-30,30)/60; break;
     }
     meteors.push({x,y,vx,vy,size,hue:rand(20,220),life:2000});
   }
 
-  function spawnExplosion(x,y,hue,power){
-    const count = Math.floor(rand(15,25)*power);
+  function spawnExplosion(x,y){
+    const count = Math.floor(rand(20,40));
     for(let i=0;i<count;i++){
       const a = rand(0,Math.PI*2);
-      const spd = rand(1,6)*power;
-      sparks.push({x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,
-        life:rand(400,900),start:performance.now(),
-        hue:hue+rand(-30,30),alpha:1});
+      const spd = rand(2,8);
+      sparks.push({x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:rand(300,900),start:performance.now(),hue:rand(20,220),alpha:1});
     }
-    flashes.push({x,y,alpha:1,start:performance.now(),life:150});
+    flashes.push({x,y,alpha:1,start:performance.now(),life:120});
   }
 
   function update(dt){
     const qr = qrRect();
     for(let i=meteors.length-1;i>=0;i--){
-      const m = meteors[i];
-      m.x += m.vx*dt*60;
-      m.y += m.vy*dt*60;
+      const m=meteors[i];
+      m.x+=m.vx*dt*60;
+      m.y+=m.vy*dt*60;
       if(m.x>qr.left&&m.x<qr.right&&m.y>qr.top&&m.y<qr.bottom){
-        spawnExplosion(m.x,m.y,m.hue,1.5);
-        meteors.splice(i,1); continue;
+        spawnExplosion(m.x,m.y);
+        meteors.splice(i,1);
+        continue;
       }
-      m.life -= dt*1000;
+      m.life-=dt*1000;
       if(m.life<=0||m.x<-100||m.x>W+100||m.y<-100||m.y>H+100) meteors.splice(i,1);
     }
 
     for(let i=sparks.length-1;i>=0;i--){
-      const s = sparks[i];
+      const s=sparks[i];
       s.x+=s.vx; s.y+=s.vy;
-      s.vx*=0.98; s.vy*=0.98;
+      s.vx*=0.95; s.vy*=0.95;
       if(performance.now()-s.start>s.life) sparks.splice(i,1);
     }
 
     for(let i=flashes.length-1;i>=0;i--){
-      const f = flashes[i];
-      const age = performance.now()-f.start;
-      f.alpha = Math.max(0,1-age/f.life);
+      const f=flashes[i];
+      const age=performance.now()-f.start;
+      f.alpha=Math.max(0,1-age/f.life);
       if(age>f.life) flashes.splice(i,1);
     }
 
@@ -163,9 +171,9 @@
     ctx.fillRect(0,0,W,H);
 
     for(const f of flashes){
-      ctx.fillStyle=`rgba(255,240,180,${f.alpha})`;
+      ctx.fillStyle=`rgba(255,255,180,${f.alpha})`;
       ctx.beginPath();
-      ctx.arc(f.x,f.y,50,0,Math.PI*2);
+      ctx.arc(f.x,f.y,60,0,Math.PI*2);
       ctx.fill();
     }
 
@@ -174,26 +182,23 @@
       ctx.fillStyle=`hsl(${m.hue},100%,70%)`;
       ctx.arc(m.x,m.y,m.size,0,Math.PI*2);
       ctx.fill();
-      ctx.strokeStyle=`hsl(${m.hue},100%,90%)`;
-      ctx.lineWidth=1;
-      ctx.stroke();
     }
 
     for(const s of sparks){
-      const age = (performance.now()-s.start)/s.life;
-      const alpha = Math.max(0,s.alpha*(1-age));
+      const age=(performance.now()-s.start)/s.life;
+      const alpha=Math.max(0,s.alpha*(1-age));
       ctx.beginPath();
       ctx.fillStyle=`hsla(${s.hue},100%,70%,${alpha})`;
-      ctx.arc(s.x,s.y,Math.max(0.8,2*(1-age)),0,Math.PI*2);
+      ctx.arc(s.x,s.y,Math.max(1,2*(1-age)),0,Math.PI*2);
       ctx.fill();
     }
   }
 
   let last = performance.now();
   function tick(now){
-    const dt = Math.min(0.04,(now-last)/1000);
-    last = now;
-    if(Math.random()<0.4) spawnMeteor();
+    const dt=Math.min(0.04,(now-last)/1000);
+    last=now;
+    if(Math.random()<0.5) spawnMeteor();
     update(dt);
     draw();
     requestAnimationFrame(tick);
@@ -201,74 +206,6 @@
   requestAnimationFrame(tick);
 
   addEventListener('resize',()=>{
-    W = innerWidth; H = innerHeight;
-    canvas.width = W*DPR; canvas.height = H*DPR;
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-  });
-})();
-</script>
-
-<!-- ========== UI logic (giữ nguyên) ========== -->
-<script>
-(function(){
-  const WAIT_SECONDS = 20;
-  const stk = '51015202530369';
-  const confirmBtn = document.getElementById('confirmBtn');
-  const toast = document.getElementById('toast');
-  const full = document.getElementById('full');
-  const copyBtn = document.getElementById('copyBtn');
-  const reportBtn = document.getElementById('reportBtn');
-  const errorPopup = document.getElementById('errorPopup');
-
-  let remaining = WAIT_SECONDS;
-  confirmBtn.disabled = true;
-  confirmBtn.setAttribute('aria-disabled','true');
-
-  const timer = setInterval(()=>{
-    remaining--;
-    if(remaining<=0){
-      clearInterval(timer);
-      confirmBtn.disabled=false;
-      confirmBtn.classList.remove('primary');
-      confirmBtn.style.cursor='pointer';
-      confirmBtn.style.background='linear-gradient(90deg,#12d6a1,#00a6ff)';
-      confirmBtn.setAttribute('aria-disabled','false');
-    }
-  },1000);
-
-  confirmBtn.addEventListener('click',()=>{
-    if(confirmBtn.getAttribute('aria-disabled')==='true'){
-      toast.style.display='block';
-      setTimeout(()=>toast.style.display='none',1900);
-      return;
-    }
-    full.classList.add('show');
-    setTimeout(()=>{
-      const box = full.querySelector('.box');
-      box.innerHTML='<h2>✅ Giao dịch đã được xác nhận</h2><p>Cảm ơn bạn — chúng tôi sẽ liên hệ sớm.</p>'+
-        '<div style="margin-top:14px"><a href="./" style="padding:10px 14px;border-radius:10px;background:#06b39a;color:#001;font-weight:800;text-decoration:none;">Quay về</a></div>';
-    },3000);
-  });
-
-  copyBtn.addEventListener('click',()=>{
-    navigator.clipboard.writeText(stk).then(()=>{
-      toast.textContent='Đã sao chép số tài khoản.';
-      toast.style.background='#effff6';
-      toast.style.color='#084d36';
-      toast.style.display='block';
-      setTimeout(()=>{
-        toast.style.display='none';
-        toast.textContent='Bạn chưa chuyển tiền hoặc bấm quá sớm. Vui lòng đợi đủ 20s!';
-        toast.style.background=''; toast.style.color='';
-      },1800);
-    });
-  });
-
-  reportBtn.addEventListener('click',()=> errorPopup.classList.add('show'));
-  window.closeFull = ()=>full.classList.remove('show');
-  window.closeError = ()=>errorPopup.classList.remove('show');
-})();
-</script>
-
-</body>
-</html>
+    W=innerWidth; H=innerHeight;
+    canvas.width=W*DPR; canvas.height=H*DPR;
+    ctx.setTransform(D
